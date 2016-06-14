@@ -1,105 +1,52 @@
-import productTemplate from './templates/product';
-import Collection from './components/collection';
-import Product from './components/product';
-import Cart from './components/cart';
+import {h, createProjector} from 'maquette';
 
-window.ShopifyBuy = ShopifyBuy;
-
-const componentTypes = {
-  'product': Product,
-  'collection': Collection
+const productContents = ['title', 'qty', 'button'];
+const productTemplates = {
+  'title': (data) => {
+    return h('h2', data.name)
+  },
+  'qty': (data) => {
+    return h('p', data.qty)
+  },
+  'button': (data, events) => {
+    return h('button', {
+      onclick: events.handleClick
+    }, 'add 1')
+  }
 }
 
-class UI {
+class Product {
   constructor() {
-    this.components = {
-      'collection': [],
-      'product': []
-    };
-    this.client = ShopifyBuy.buildClient({
-      apiKey: 'bf081e860bc9dc1ce0654fdfbc20892d',
-      myShopifyDomain: 'embeds',
-      appId: '6'
-    });
-    this.loadEmbedStyles(() => {
-      this.cart = new Cart({}, {
-        client: this.client
-      });
-      this.onReady();
-    });
-  }
-
-  addVariantToCart(data) {
-    this.cart.addItem(data);
-  }
-
-  get props() {
-    return {
-      collection: {
-        'addVariantToCart': this.addVariantToCart.bind(this)
-      },
-      product: {
-        'addVariantToCart': this.addVariantToCart.bind(this)
+    this.data = {
+      name: 'Hat',
+      qty: 0
+    }
+    this.events = {
+      handleClick: (evt) => {
+        this.data.qty++;
       }
     }
   }
 
-  loadEmbedStyles(cb) {
-    let cssURL = './styles/embeds.css';
+  render(projector) {
+    projector.append(document.body, this.template.bind(this));
+  }
 
-    let link = document.createElement('link');
+  get children() {
+    return productContents.map(item => {
+      return productTemplates[item](this.data, this.events)
+    });
+  }
 
-    link.rel = 'stylesheet';
-    link.type = 'text/css';
-    link.href = cssURL;
-
-    let img = document.createElement('img');
-
-    img.style.opacity = 0;
-    document.body.appendChild(img);
-    document.head.appendChild(link);
-
-
-    img.src = cssURL;
-    img.onerror = () => {
-      document.body.removeChild(img);
-      cb();
-    }
-
-}
-
-  createComponent(type, config) {
-    let props = {
-      callbacks: this.props[type],
-      client: this.client
-    }
-    this.components[type].push(new componentTypes[type](config, props));
+  template() {
+    return h('div.product',
+      this.children
+    );
   }
 }
 
-ShopifyBuy.UI = new UI();
 
-ShopifyBuy.UI.onReady = () => {
-  // ShopifyBuy.UI.createComponent('product', {
-  //   id: 6640244678,
-  //   styles: {
-  //     button: {
-  //       'background-color': 'red',
-  //       'color': 'black'
-  //     }
-  //   }
-  // });
-
-ShopifyBuy.UI.createComponent('collection', {
-    id: 244484358,
-    productConfig: {
-      styles: {
-        button: {
-          'background-color': 'red',
-          'color': 'yellow'
-        }
-      }
-    }
-  });
-};
+const projector = createProjector();
+let product = new Product();
+product.render(projector);
 

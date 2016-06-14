@@ -1,29 +1,851 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-"use strict";function _interopRequireDefault(e){return e&&e.__esModule?e:{"default":e}}function _classCallCheck(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}function _possibleConstructorReturn(e,t){if(!e)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return!t||"object"!=typeof t&&"function"!=typeof t?e:t}function _inherits(e,t){if("function"!=typeof t&&null!==t)throw new TypeError("Super expression must either be null or a function, not "+typeof t);e.prototype=Object.create(t&&t.prototype,{constructor:{value:e,enumerable:!1,writable:!0,configurable:!0}}),t&&(Object.setPrototypeOf?Object.setPrototypeOf(e,t):e.__proto__=t)}Object.defineProperty(exports,"__esModule",{value:!0});var _createClass=function(){function e(e,t){for(var r=0;r<t.length;r++){var n=t[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(e,n.key,n)}}return function(t,r,n){return r&&e(t.prototype,r),n&&e(t,n),t}}(),_get=function e(t,r,n){null===t&&(t=Function.prototype);var i=Object.getOwnPropertyDescriptor(t,r);if(void 0===i){var a=Object.getPrototypeOf(t);return null===a?void 0:e(a,r,n)}if("value"in i)return i.value;var o=i.get;if(void 0!==o)return o.call(n)},_container=require("./container"),_container2=_interopRequireDefault(_container),_view=require("./view"),_view2=_interopRequireDefault(_view),_cart=require("../defaults/cart"),_cart2=_interopRequireDefault(_cart),Cart=function(e){function t(e,r){_classCallCheck(this,t);var n=Object.assign({},_cart2["default"],e);return _possibleConstructorReturn(this,Object.getPrototypeOf(t).call(this,n,r))}return _inherits(t,e),_createClass(t,[{key:"getData",value:function(){return localStorage.getItem("lastCartId")?this.props.client.fetchCart(localStorage.getItem("lastCartId")).then(function(e){return e}):this.props.client.createCart().then(function(e){return localStorage.setItem("lastCartId",e.id),e})}},{key:"updateLineItemQty",value:function(e,t){var r=this,n=t.data,i=t.data.quantity+e;this.props.model.updateLineItem(n.id,i).then(function(e){r.render()})}},{key:"addItem",value:function(e){var t=this;this.props.model.addVariants({variant:e.selectedVariant,quantity:1}).then(function(e){t.props.model=e,t.render()})}},{key:"render",value:function(){var e=this;_get(Object.getPrototypeOf(t.prototype),"render",this).call(this);var r=this.wrapper.querySelector("[data-include]");this.props.model.lineItems.forEach(function(t){var n=new _view2["default"](e.config.lineItemConfig,t,{incQuantity:e.updateLineItemQty.bind(e,1),decQuantity:e.updateLineItemQty.bind(e,-1)}),i=e._createWrapper(r,e.config.lineItemConfig.className);n.render(i)}),this.resize()}}]),t}(_container2["default"]);exports["default"]=Cart;
-},{"../defaults/cart":7,"./container":3,"./view":6}],2:[function(require,module,exports){
-"use strict";function _interopRequireDefault(e){return e&&e.__esModule?e:{"default":e}}function _classCallCheck(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}function _possibleConstructorReturn(e,t){if(!e)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return!t||"object"!=typeof t&&"function"!=typeof t?e:t}function _inherits(e,t){if("function"!=typeof t&&null!==t)throw new TypeError("Super expression must either be null or a function, not "+typeof t);e.prototype=Object.create(t&&t.prototype,{constructor:{value:e,enumerable:!1,writable:!0,configurable:!0}}),t&&(Object.setPrototypeOf?Object.setPrototypeOf(e,t):e.__proto__=t)}Object.defineProperty(exports,"__esModule",{value:!0});var _createClass=function(){function e(e,t){for(var r=0;r<t.length;r++){var o=t[r];o.enumerable=o.enumerable||!1,o.configurable=!0,"value"in o&&(o.writable=!0),Object.defineProperty(e,o.key,o)}}return function(t,r,o){return r&&e(t.prototype,r),o&&e(t,o),t}}(),_container=require("./container"),_container2=_interopRequireDefault(_container),_product=require("./product"),_product2=_interopRequireDefault(_product),_product3=require("../defaults/product"),_product4=_interopRequireDefault(_product3),_iframe=require("./iframe"),_iframe2=_interopRequireDefault(_iframe),collectionDefaults={className:"collection",entryNode:document.getElementsByTagName("script")[0].parentNode,iframe:!0,classes:{data:"collection"},productConfig:Object.assign({},_product4["default"],{iframe:!1})},Collection=function(e){function t(e,r){_classCallCheck(this,t);var o=Object.assign({},collectionDefaults.productConfig,e.productConfig),n=Object.assign({},collectionDefaults,e);n.productConfig=o,n.styles=o.styles,n.classes=o.classes;var a=_possibleConstructorReturn(this,Object.getPrototypeOf(t).call(this,n,r));return a.modal=null,a.config.productConfig.modal&&(a.modal=new _iframe2["default"](a.config.entryNode,{},{data:"product_modal"})),a}return _inherits(t,e),_createClass(t,[{key:"getData",value:function(){return this.props.client.fetchQuery("products",{collection_id:this.config.id}).then(function(e){return e})}},{key:"onCartAdd",value:function(e){this.props.callbacks.addVariantToCart(e.data)}},{key:"render",value:function(){var e=this;this.wrapper=this.wrapper||this._createWrapper(),this.props.model.forEach(function(t){var r=new _product2["default"](e.config.productConfig,{model:t,callbacks:e.props.callbacks,modal:e.modal}),o=e._createWrapper(e.wrapper,e.config.productConfig.className);r.render(o)}),this.resize()}}]),t}(_container2["default"]);exports["default"]=Collection;
-},{"../defaults/product":8,"./container":3,"./iframe":4,"./product":5}],3:[function(require,module,exports){
-"use strict";function _interopRequireDefault(e){return e&&e.__esModule?e:{"default":e}}function _classCallCheck(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}Object.defineProperty(exports,"__esModule",{value:!0});var _createClass=function(){function e(e,t){for(var i=0;i<t.length;i++){var r=t[i];r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(e,r.key,r)}}return function(t,i,r){return i&&e(t.prototype,i),r&&e(t,r),t}}(),_iframe=require("./iframe"),_iframe2=_interopRequireDefault(_iframe),_view=require("./view"),_view2=_interopRequireDefault(_view),ComponentContainer=function(){function e(t,i){_classCallCheck(this,e),this.config=t,this.props=i||{},this.iframe=this.config.iframe?new _iframe2["default"](this.config.entryNode,this.config.styles,this.config.classes):null,this.document=this.config.iframe?this.iframe.document:window.document,this.wrapper=null,this.props.model||this.init()}return _createClass(e,[{key:"init",value:function(){var e=this;this.getData().then(function(t){e.props.model=t,e.render()})}},{key:"resize",value:function(){this.config.iframe&&(this.iframe.el.style.height=this.wrapper.clientHeight+"px")}},{key:"render",value:function(e){this.wrapper=e||this.wrapper||this._createWrapper();var t=new _view2["default"](this.config,this.props.model,this.events);t.render(this.wrapper),this.wrapper.setAttribute("id",t.id)}},{key:"_createWrapper",value:function(e){for(var t=this.document.createElement("div"),i=arguments.length,r=Array(i>1?i-1:0),n=1;i>n;n++)r[n-1]=arguments[n];return t.className=r.join(" ")||this.config.className,e?e.appendChild(t):this.iframe?this.document.body.appendChild(t):this.config.entryNode.appendChild(t),t}}]),e}();exports["default"]=ComponentContainer;
-},{"./iframe":4,"./view":6}],4:[function(require,module,exports){
-"use strict";function _interopRequireDefault(e){return e&&e.__esModule?e:{"default":e}}function _classCallCheck(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}Object.defineProperty(exports,"__esModule",{value:!0});var _createClass=function(){function e(e,t){for(var s=0;s<t.length;s++){var n=t[s];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(e,n.key,n)}}return function(t,s,n){return s&&e(t.prototype,s),n&&e(t,n),t}}(),_styles=require("../templates/styles"),_styles2=_interopRequireDefault(_styles),Iframe=function(){function e(t,s,n){_classCallCheck(this,e),this.stylesConfig=s||{},this.classes=n,this.div=document.createElement("div"),this.div.setAttribute("data-embed_type",this.classes.data),this.el=document.createElement("iframe"),this.el.style.width="100%",this.el.style.overflow="hidden",this.el.style.border="none",this.el.scrolling=!1,this.el.setAttribute("horizontalscrolling","no"),this.el.setAttribute("verticalscrolling","no"),this.div.appendChild(this.el),t.appendChild(this.div),this.loadCSS(),this.el.contentDocument.body.style.margin=0}return _createClass(e,[{key:"loadCSS",value:function(){var e=this,t="./styles/main.css",s=this.document.createElement("link"),n=this.document.createElement("img");n.style.opacity=0,s.rel="stylesheet",s.type="text/css",s.href=t,this.document.head.appendChild(s),this.document.body.appendChild(n),n.src=t,n.onerror=function(){e.document.body.removeChild(n),e.appendStyleTag()}}},{key:"appendStyleTag",value:function(){var e=this.el.contentDocument.createElement("style");e.innerHTML=Handlebars.compile(_styles2["default"])({selectors:this.styles}),this.el.contentDocument.head.appendChild(e)}},{key:"styles",get:function(){var e=this;return Object.keys(this.stylesConfig).map(function(t){return{selector:"."+e.classes[t],declarations:Object.keys(e.stylesConfig[t]).map(function(s){return{name:s,value:e.stylesConfig[t][s]}})}})}},{key:"document",get:function(){return this.el.contentDocument}}]),e}();exports["default"]=Iframe;
-},{"../templates/styles":13}],5:[function(require,module,exports){
-"use strict";function _interopRequireDefault(e){return e&&e.__esModule?e:{"default":e}}function _classCallCheck(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}function _possibleConstructorReturn(e,t){if(!e)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return!t||"object"!=typeof t&&"function"!=typeof t?e:t}function _inherits(e,t){if("function"!=typeof t&&null!==t)throw new TypeError("Super expression must either be null or a function, not "+typeof t);e.prototype=Object.create(t&&t.prototype,{constructor:{value:e,enumerable:!1,writable:!0,configurable:!0}}),t&&(Object.setPrototypeOf?Object.setPrototypeOf(e,t):e.__proto__=t)}Object.defineProperty(exports,"__esModule",{value:!0});var _createClass=function(){function e(e,t){for(var n=0;n<t.length;n++){var r=t[n];r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(e,r.key,r)}}return function(t,n,r){return n&&e(t.prototype,n),r&&e(t,r),t}}(),_get=function e(t,n,r){null===t&&(t=Function.prototype);var o=Object.getOwnPropertyDescriptor(t,n);if(void 0===o){var i=Object.getPrototypeOf(t);return null===i?void 0:e(i,n,r)}if("value"in o)return o.value;var a=o.get;if(void 0!==a)return a.call(r)},_container=require("./container"),_container2=_interopRequireDefault(_container),_product=require("../defaults/product"),_product2=_interopRequireDefault(_product),_view=require("./view"),_view2=_interopRequireDefault(_view),Product=function(e){function t(e,n){_classCallCheck(this,t);var r=Object.assign({},_product2["default"],e),o=_possibleConstructorReturn(this,Object.getPrototypeOf(t).call(this,r,n));return o.config.modal&&(o.removeContents("button"),o.removeContents("variantSelection"),o.wrapContents("modalTrigger")),o.events={addVariantToCart:o.onCartAdd.bind(o),openModal:o.openModal.bind(o)},o}return _inherits(t,e),_createClass(t,[{key:"getData",value:function(){return this.props.client.fetchProduct(this.config.id).then(function(e){return e})}},{key:"removeContents",value:function(e){var t=this.config.contents.indexOf(e);t>-1&&this.config.contents.splice(t,1)}},{key:"wrapContents",value:function(e){this.config.contents.unshift(e+"Open"),this.config.contents.push(e+"Close")}},{key:"openModal",value:function(){var e=this;this.props.modal.div.classList.add("active");var n=this.props.modal.document.createElement("div");n.classList.add("product-modal-overlay"),n.classList.add("active"),this.props.modal.document.body.appendChild(n);var r=this._createWrapper(this.props.modal.document.body,"product-modal-container","active");_get(Object.getPrototypeOf(t.prototype),"render",this).call(this,r);var o=Object.assign({},this.config,{contents:["title","variantSelection","button"]}),i=new _view2["default"](o,this.props.model,this.events);i.render(this.wrapper),r.setAttribute("id",i.id);var a=r.querySelector("[data-include]");this.props.model.options.forEach(function(t){var n=new _view2["default"](e.config.optionConfig,t,{selectVariant:e.selectChange.bind(e)}),r=e._createWrapper(a,e.config.optionConfig.className);n.render(r)})}},{key:"onCartAdd",value:function(e){this.props.callbacks.addVariantToCart(e.data)}},{key:"selectChange",value:function(e,t){var n=t.target,r=n.options[n.selectedIndex].value,o=n.getAttribute("name");this.updateSelectedVariant(o,r)}},{key:"updateSelectedVariant",value:function(e,t){var n=this.props.model.options.filter(function(t,n){return t.name===e})[0];n.selected=t,this.render()}},{key:"render",value:function(e){var n=this;_get(Object.getPrototypeOf(t.prototype),"render",this).call(this,e);var r=this.wrapper.querySelector("[data-include]");this.config.contents.indexOf("variantSelection")>-1&&this.props.model.options.forEach(function(e){var t=new _view2["default"](n.config.optionConfig,e,{selectVariant:n.selectChange.bind(n)}),o=n._createWrapper(r,n.config.optionConfig.className);t.render(o)}),this.resize()}}]),t}(_container2["default"]);exports["default"]=Product;
-},{"../defaults/product":8,"./container":3,"./view":6}],6:[function(require,module,exports){
-"use strict";function _toConsumableArray(t){if(Array.isArray(t)){for(var e=0,r=Array(t.length);e<t.length;e++)r[e]=t[e];return r}return Array.from(t)}function _classCallCheck(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}function uniqueId(){return"shopify-ui-"+ ++idCounter}Object.defineProperty(exports,"__esModule",{value:!0});var _slicedToArray=function(){function t(t,e){var r=[],n=!0,i=!1,a=void 0;try{for(var o,u=t[Symbol.iterator]();!(n=(o=u.next()).done)&&(r.push(o.value),!e||r.length!==e);n=!0);}catch(s){i=!0,a=s}finally{try{!n&&u["return"]&&u["return"]()}finally{if(i)throw a}}return r}return function(e,r){if(Array.isArray(e))return e;if(Symbol.iterator in Object(e))return t(e,r);throw new TypeError("Invalid attempt to destructure non-iterable instance")}}(),_createClass=function(){function t(t,e){for(var r=0;r<e.length;r++){var n=e[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(t,n.key,n)}}return function(e,r,n){return r&&t(e.prototype,r),n&&t(e,n),e}}();Handlebars.registerHelper("conditionalString",function(t,e,r){return t===e?r:null});var idCounter=0,View=function(){function t(e,r,n){_classCallCheck(this,t),this.config=e,this.data=r,this.events=n,this.id=uniqueId()}return _createClass(t,[{key:"listen",value:function(){var t=this,e=this.wrapper.querySelectorAll("[data-event]");[].concat(_toConsumableArray(e)).forEach(function(e){var r=e.dataset.event.split("."),n=_slicedToArray(r,2),i=n[0],a=n[1];e.addEventListener(i,function(e){t.events[a].call(t,t,e)})})}},{key:"render",value:function(t){var e={data:this.data,classes:this.config.classes};t.innerHTML=this.template(e),t.setAttribute("id",this.id),this.wrapper=t,this.listen()}},{key:"templateString",get:function(){var t=this;return this.config.contents.reduce(function(e,r){return e+t.config.templates[r]},"")}},{key:"template",get:function(){return Handlebars.compile(this.templateString)}}]),t}();exports["default"]=View;
-},{}],7:[function(require,module,exports){
-"use strict";function _interopRequireDefault(e){return e&&e.__esModule?e:{"default":e}}Object.defineProperty(exports,"__esModule",{value:!0});var _cart=require("../templates/cart"),_cart2=_interopRequireDefault(_cart),_lineItem=require("../templates/line-item"),_lineItem2=_interopRequireDefault(_lineItem),cartDefaults={className:"cart",iframe:!0,entryNode:document.getElementsByTagName("script")[0].parentNode,templates:_cart2["default"],contents:["title","items","total","checkout"],lineItemConfig:{className:"cart-item",templates:_lineItem2["default"],contents:["title","price","updateQuantity","quantity"]},classes:{data:"cart_content"}};exports["default"]=cartDefaults;
-},{"../templates/cart":9,"../templates/line-item":10}],8:[function(require,module,exports){
-"use strict";function _interopRequireDefault(t){return t&&t.__esModule?t:{"default":t}}Object.defineProperty(exports,"__esModule",{value:!0});var _product=require("../templates/product"),_product2=_interopRequireDefault(_product),_option=require("../templates/option"),_option2=_interopRequireDefault(_option),productDefaults={className:"product",iframe:!0,entryNode:document.getElementsByTagName("script")[0].parentNode,templates:_product2["default"],contents:["title","variantTitle","price","variantSelection","button"],classes:{title:"product-title",variantTitle:"variant-title",price:"variant-price",button:"buy-button",data:"product"},optionConfig:{templates:_option2["default"],contents:["option"],className:"option"},modal:!1};exports["default"]=productDefaults;
-},{"../templates/option":11,"../templates/product":12}],9:[function(require,module,exports){
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var cartTemplate={title:'<div class="cart-section cart-section--top"><h2 class="cart-title">{{data.title}}</h2><button class="btn--close"><span aria-role="hidden">×</span><span class="visuallyhidden">Close</span></button></div>',items:"<div data-include></div>",total:'<div class="cart-info__pricing"><span class="cart-info__small cart-info__total">CAD</span><span class="pricing pricing--no-padding">{{data.subtotal}}</span></div>',checkout:'<input type="submit" class="btn btn--cart-checkout" id="checkout" name="checkout" value="Checkout">'};exports["default"]=cartTemplate;
-},{}],10:[function(require,module,exports){
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var lineItemTemplate={title:'<h3 class="product-title">{{data.title}}</h3><h4>{{data.variant_title}}</h4>',price:'<h5 class="variant-price">{{data.price}}</h5>',updateQuantity:'<button data-event="click.decQuantity" class="btn--seamless quantity-decrement" type="button"><span>-</span><span class="visuallyhidden">Decrement</span></button><input class="cart-item__quantity" type="number" min="0" aria-label="Quantity"><button data-event="click.incQuantity" class="btn--seamless quantity-increment" type="button"><span>+</span><span class="visuallyhidden">Increment</span></button>',quantity:"<p>{{data.quantity}} = {{data.line_price}}</p>"};exports["default"]=lineItemTemplate;
-},{}],11:[function(require,module,exports){
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var optionTemplates={option:'<select data-event="change.selectVariant" name={{data.name}}>{{#each data.values}}<option {{conditionalString ../data.selected this "selected"}}  value={{this}}>{{this}}</option>{{/each}}</select>'};exports["default"]=optionTemplates;
-},{}],12:[function(require,module,exports){
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var productTemplate={title:'<h1 class="{{classes.title}}">{{data.title}}</h1>',variantTitle:'<h2 class="{{classes.variantTitle}}">{{data.selectedVariant.title}}</h2>',price:'<h2 class="{{classes.price}}">{{data.selectedVariant.price}}</h2>',variantSelection:"<div data-include></div>",button:'<button data-event="click.addVariantToCart" class="{{classes.button}}">Add To Cart</button>',modalTriggerOpen:'<div data-event="click.openModal">',modalTriggerClose:"</div>"};exports["default"]=productTemplate;
-},{}],13:[function(require,module,exports){
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var stylesTemplate="{{#each selectors}}{{this.selector}} { {{#each this.declarations}}{{this.name}}: {{this.value}};{{/each}} } {{/each}}";exports["default"]=stylesTemplate;
-},{}],14:[function(require,module,exports){
-"use strict";function _interopRequireDefault(e){return e&&e.__esModule?e:{"default":e}}function _classCallCheck(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}var _createClass=function(){function e(e,t){for(var o=0;o<t.length;o++){var n=t[o];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(e,n.key,n)}}return function(t,o,n){return o&&e(t.prototype,o),n&&e(t,n),t}}(),_product=require("./templates/product"),_product2=_interopRequireDefault(_product),_collection=require("./components/collection"),_collection2=_interopRequireDefault(_collection),_product3=require("./components/product"),_product4=_interopRequireDefault(_product3),_cart=require("./components/cart"),_cart2=_interopRequireDefault(_cart);window.ShopifyBuy=ShopifyBuy;var componentTypes={product:_product4["default"],collection:_collection2["default"]},UI=function(){function e(){var t=this;_classCallCheck(this,e),this.components={collection:[],product:[]},this.client=ShopifyBuy.buildClient({apiKey:"bf081e860bc9dc1ce0654fdfbc20892d",myShopifyDomain:"embeds",appId:"6"}),this.loadEmbedStyles(function(){t.cart=new _cart2["default"]({},{client:t.client}),t.onReady()})}return _createClass(e,[{key:"addVariantToCart",value:function(e){this.cart.addItem(e)}},{key:"loadEmbedStyles",value:function(e){var t="./styles/embeds.css",o=document.createElement("link");o.rel="stylesheet",o.type="text/css",o.href=t;var n=document.createElement("img");n.style.opacity=0,document.body.appendChild(n),document.head.appendChild(o),n.src=t,n.onerror=function(){document.body.removeChild(n),e()}}},{key:"createComponent",value:function(e,t){var o={callbacks:this.props[e],client:this.client};this.components[e].push(new componentTypes[e](t,o))}},{key:"props",get:function(){return{collection:{addVariantToCart:this.addVariantToCart.bind(this)},product:{addVariantToCart:this.addVariantToCart.bind(this)}}}}]),e}();ShopifyBuy.UI=new UI,ShopifyBuy.UI.onReady=function(){ShopifyBuy.UI.createComponent("collection",{id:244484358,productConfig:{styles:{button:{"background-color":"red",color:"yellow"}}}})};
-},{"./components/cart":1,"./components/collection":2,"./components/product":5,"./templates/product":12}]},{},[14]);
+(function (root, factory) {
+    if (typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module.
+        define(['exports'], factory);
+    } else if (typeof exports === 'object' && typeof exports.nodeName !== 'string') {
+        // CommonJS
+        factory(exports);
+    } else {
+        // Browser globals
+        factory(root.maquette = {});
+    }
+}(this, function (exports) {
+    ;
+    ;
+    ;
+    ;
+    var NAMESPACE_W3 = 'http://www.w3.org/';
+    var NAMESPACE_SVG = NAMESPACE_W3 + '2000/svg';
+    var NAMESPACE_XLINK = NAMESPACE_W3 + '1999/xlink';
+    // Utilities
+    var emptyArray = [];
+    var extend = function (base, overrides) {
+        var result = {};
+        Object.keys(base).forEach(function (key) {
+            result[key] = base[key];
+        });
+        if (overrides) {
+            Object.keys(overrides).forEach(function (key) {
+                result[key] = overrides[key];
+            });
+        }
+        return result;
+    };
+    // Hyperscript helper functions
+    var same = function (vnode1, vnode2) {
+        if (vnode1.vnodeSelector !== vnode2.vnodeSelector) {
+            return false;
+        }
+        if (vnode1.properties && vnode2.properties) {
+            if (vnode1.properties.key !== vnode2.properties.key) {
+                return false;
+            }
+            return vnode1.properties.bind === vnode2.properties.bind;
+        }
+        return !vnode1.properties && !vnode2.properties;
+    };
+    var toTextVNode = function (data) {
+        return {
+            vnodeSelector: '',
+            properties: undefined,
+            children: undefined,
+            text: data.toString(),
+            domNode: null
+        };
+    };
+    var appendChildren = function (parentSelector, insertions, main) {
+        for (var i = 0, length_1 = insertions.length; i < length_1; i++) {
+            var item = insertions[i];
+            if (Array.isArray(item)) {
+                appendChildren(parentSelector, item, main);
+            } else {
+                if (item !== null && item !== undefined) {
+                    if (!item.hasOwnProperty('vnodeSelector')) {
+                        item = toTextVNode(item);
+                    }
+                    main.push(item);
+                }
+            }
+        }
+    };
+    // Render helper functions
+    var missingTransition = function () {
+        throw new Error('Provide a transitions object to the projectionOptions to do animations');
+    };
+    var DEFAULT_PROJECTION_OPTIONS = {
+        namespace: undefined,
+        eventHandlerInterceptor: undefined,
+        styleApplyer: function (domNode, styleName, value) {
+            // Provides a hook to add vendor prefixes for browsers that still need it.
+            domNode.style[styleName] = value;
+        },
+        transitions: {
+            enter: missingTransition,
+            exit: missingTransition
+        }
+    };
+    var applyDefaultProjectionOptions = function (projectorOptions) {
+        return extend(DEFAULT_PROJECTION_OPTIONS, projectorOptions);
+    };
+    var checkStyleValue = function (styleValue) {
+        if (typeof styleValue !== 'string') {
+            throw new Error('Style values must be strings');
+        }
+    };
+    var setProperties = function (domNode, properties, projectionOptions) {
+        if (!properties) {
+            return;
+        }
+        var eventHandlerInterceptor = projectionOptions.eventHandlerInterceptor;
+        var propNames = Object.keys(properties);
+        var propCount = propNames.length;
+        for (var i = 0; i < propCount; i++) {
+            var propName = propNames[i];
+            /* tslint:disable:no-var-keyword: edge case */
+            var propValue = properties[propName];
+            /* tslint:enable:no-var-keyword */
+            if (propName === 'className') {
+                throw new Error('Property "className" is not supported, use "class".');
+            } else if (propName === 'class') {
+                propValue.split(/\s+/).forEach(function (token) {
+                    return domNode.classList.add(token);
+                });
+            } else if (propName === 'classes') {
+                // object with string keys and boolean values
+                var classNames = Object.keys(propValue);
+                var classNameCount = classNames.length;
+                for (var j = 0; j < classNameCount; j++) {
+                    var className = classNames[j];
+                    if (propValue[className]) {
+                        domNode.classList.add(className);
+                    }
+                }
+            } else if (propName === 'styles') {
+                // object with string keys and string (!) values
+                var styleNames = Object.keys(propValue);
+                var styleCount = styleNames.length;
+                for (var j = 0; j < styleCount; j++) {
+                    var styleName = styleNames[j];
+                    var styleValue = propValue[styleName];
+                    if (styleValue) {
+                        checkStyleValue(styleValue);
+                        projectionOptions.styleApplyer(domNode, styleName, styleValue);
+                    }
+                }
+            } else if (propName === 'key') {
+                continue;
+            } else if (propValue === null || propValue === undefined) {
+                continue;
+            } else {
+                var type = typeof propValue;
+                if (type === 'function') {
+                    if (propName.lastIndexOf('on', 0) === 0) {
+                        if (eventHandlerInterceptor) {
+                            propValue = eventHandlerInterceptor(propName, propValue, domNode, properties);    // intercept eventhandlers
+                        }
+                        if (propName === 'oninput') {
+                            (function () {
+                                // record the evt.target.value, because IE and Edge sometimes do a requestAnimationFrame between changing value and running oninput
+                                var oldPropValue = propValue;
+                                propValue = function (evt) {
+                                    evt.target['oninput-value'] = evt.target.value;
+                                    // may be HTMLTextAreaElement as well
+                                    oldPropValue.apply(this, [evt]);
+                                };
+                            }());
+                        }
+                        domNode[propName] = propValue;
+                    }
+                } else if (type === 'string' && propName !== 'value' && propName !== 'innerHTML') {
+                    if (projectionOptions.namespace === NAMESPACE_SVG && propName === 'href') {
+                        domNode.setAttributeNS(NAMESPACE_XLINK, propName, propValue);
+                    } else {
+                        domNode.setAttribute(propName, propValue);
+                    }
+                } else {
+                    domNode[propName] = propValue;
+                }
+            }
+        }
+    };
+    var updateProperties = function (domNode, previousProperties, properties, projectionOptions) {
+        if (!properties) {
+            return;
+        }
+        var propertiesUpdated = false;
+        var propNames = Object.keys(properties);
+        var propCount = propNames.length;
+        for (var i = 0; i < propCount; i++) {
+            var propName = propNames[i];
+            // assuming that properties will be nullified instead of missing is by design
+            var propValue = properties[propName];
+            var previousValue = previousProperties[propName];
+            if (propName === 'class') {
+                if (previousValue !== propValue) {
+                    throw new Error('"class" property may not be updated. Use the "classes" property for conditional css classes.');
+                }
+            } else if (propName === 'classes') {
+                var classList = domNode.classList;
+                var classNames = Object.keys(propValue);
+                var classNameCount = classNames.length;
+                for (var j = 0; j < classNameCount; j++) {
+                    var className = classNames[j];
+                    var on = !!propValue[className];
+                    var previousOn = !!previousValue[className];
+                    if (on === previousOn) {
+                        continue;
+                    }
+                    propertiesUpdated = true;
+                    if (on) {
+                        classList.add(className);
+                    } else {
+                        classList.remove(className);
+                    }
+                }
+            } else if (propName === 'styles') {
+                var styleNames = Object.keys(propValue);
+                var styleCount = styleNames.length;
+                for (var j = 0; j < styleCount; j++) {
+                    var styleName = styleNames[j];
+                    var newStyleValue = propValue[styleName];
+                    var oldStyleValue = previousValue[styleName];
+                    if (newStyleValue === oldStyleValue) {
+                        continue;
+                    }
+                    propertiesUpdated = true;
+                    if (newStyleValue) {
+                        checkStyleValue(newStyleValue);
+                        projectionOptions.styleApplyer(domNode, styleName, newStyleValue);
+                    } else {
+                        projectionOptions.styleApplyer(domNode, styleName, '');
+                    }
+                }
+            } else {
+                if (!propValue && typeof previousValue === 'string') {
+                    propValue = '';
+                }
+                if (propName === 'value') {
+                    if (domNode[propName] !== propValue && domNode['oninput-value'] !== propValue) {
+                        domNode[propName] = propValue;
+                        // Reset the value, even if the virtual DOM did not change
+                        domNode['oninput-value'] = undefined;
+                    }
+                    // else do not update the domNode, otherwise the cursor position would be changed
+                    if (propValue !== previousValue) {
+                        propertiesUpdated = true;
+                    }
+                } else if (propValue !== previousValue) {
+                    var type = typeof propValue;
+                    if (type === 'function') {
+                        throw new Error('Functions may not be updated on subsequent renders (property: ' + propName + '). Hint: declare event handler functions outside the render() function.');
+                    }
+                    if (type === 'string' && propName !== 'innerHTML') {
+                        if (projectionOptions.namespace === NAMESPACE_SVG && propName === 'href') {
+                            domNode.setAttributeNS(NAMESPACE_XLINK, propName, propValue);
+                        } else {
+                            domNode.setAttribute(propName, propValue);
+                        }
+                    } else {
+                        if (domNode[propName] !== propValue) {
+                            domNode[propName] = propValue;
+                        }
+                    }
+                    propertiesUpdated = true;
+                }
+            }
+        }
+        return propertiesUpdated;
+    };
+    var findIndexOfChild = function (children, sameAs, start) {
+        if (sameAs.vnodeSelector !== '') {
+            // Never scan for text-nodes
+            for (var i = start; i < children.length; i++) {
+                if (same(children[i], sameAs)) {
+                    return i;
+                }
+            }
+        }
+        return -1;
+    };
+    var nodeAdded = function (vNode, transitions) {
+        if (vNode.properties) {
+            var enterAnimation = vNode.properties.enterAnimation;
+            if (enterAnimation) {
+                if (typeof enterAnimation === 'function') {
+                    enterAnimation(vNode.domNode, vNode.properties);
+                } else {
+                    transitions.enter(vNode.domNode, vNode.properties, enterAnimation);
+                }
+            }
+        }
+    };
+    var nodeToRemove = function (vNode, transitions) {
+        var domNode = vNode.domNode;
+        if (vNode.properties) {
+            var exitAnimation = vNode.properties.exitAnimation;
+            if (exitAnimation) {
+                domNode.style.pointerEvents = 'none';
+                var removeDomNode = function () {
+                    if (domNode.parentNode) {
+                        domNode.parentNode.removeChild(domNode);
+                    }
+                };
+                if (typeof exitAnimation === 'function') {
+                    exitAnimation(domNode, removeDomNode, vNode.properties);
+                    return;
+                } else {
+                    transitions.exit(vNode.domNode, vNode.properties, exitAnimation, removeDomNode);
+                    return;
+                }
+            }
+        }
+        if (domNode.parentNode) {
+            domNode.parentNode.removeChild(domNode);
+        }
+    };
+    var checkDistinguishable = function (childNodes, indexToCheck, parentVNode, operation) {
+        var childNode = childNodes[indexToCheck];
+        if (childNode.vnodeSelector === '') {
+            return;    // Text nodes need not be distinguishable
+        }
+        var properties = childNode.properties;
+        var key = properties ? properties.key === undefined ? properties.bind : properties.key : undefined;
+        if (!key) {
+            for (var i = 0; i < childNodes.length; i++) {
+                if (i !== indexToCheck) {
+                    var node = childNodes[i];
+                    if (same(node, childNode)) {
+                        if (operation === 'added') {
+                            throw new Error(parentVNode.vnodeSelector + ' had a ' + childNode.vnodeSelector + ' child ' + 'added, but there is now more than one. You must add unique key properties to make them distinguishable.');
+                        } else {
+                            throw new Error(parentVNode.vnodeSelector + ' had a ' + childNode.vnodeSelector + ' child ' + 'removed, but there were more than one. You must add unique key properties to make them distinguishable.');
+                        }
+                    }
+                }
+            }
+        }
+    };
+    var createDom;
+    var updateDom;
+    var updateChildren = function (vnode, domNode, oldChildren, newChildren, projectionOptions) {
+        if (oldChildren === newChildren) {
+            return false;
+        }
+        oldChildren = oldChildren || emptyArray;
+        newChildren = newChildren || emptyArray;
+        var oldChildrenLength = oldChildren.length;
+        var newChildrenLength = newChildren.length;
+        var transitions = projectionOptions.transitions;
+        var oldIndex = 0;
+        var newIndex = 0;
+        var i;
+        var textUpdated = false;
+        while (newIndex < newChildrenLength) {
+            var oldChild = oldIndex < oldChildrenLength ? oldChildren[oldIndex] : undefined;
+            var newChild = newChildren[newIndex];
+            if (oldChild !== undefined && same(oldChild, newChild)) {
+                textUpdated = updateDom(oldChild, newChild, projectionOptions) || textUpdated;
+                oldIndex++;
+            } else {
+                var findOldIndex = findIndexOfChild(oldChildren, newChild, oldIndex + 1);
+                if (findOldIndex >= 0) {
+                    // Remove preceding missing children
+                    for (i = oldIndex; i < findOldIndex; i++) {
+                        nodeToRemove(oldChildren[i], transitions);
+                        checkDistinguishable(oldChildren, i, vnode, 'removed');
+                    }
+                    textUpdated = updateDom(oldChildren[findOldIndex], newChild, projectionOptions) || textUpdated;
+                    oldIndex = findOldIndex + 1;
+                } else {
+                    // New child
+                    createDom(newChild, domNode, oldIndex < oldChildrenLength ? oldChildren[oldIndex].domNode : undefined, projectionOptions);
+                    nodeAdded(newChild, transitions);
+                    checkDistinguishable(newChildren, newIndex, vnode, 'added');
+                }
+            }
+            newIndex++;
+        }
+        if (oldChildrenLength > oldIndex) {
+            // Remove child fragments
+            for (i = oldIndex; i < oldChildrenLength; i++) {
+                nodeToRemove(oldChildren[i], transitions);
+                checkDistinguishable(oldChildren, i, vnode, 'removed');
+            }
+        }
+        return textUpdated;
+    };
+    var addChildren = function (domNode, children, projectionOptions) {
+        if (!children) {
+            return;
+        }
+        for (var i = 0; i < children.length; i++) {
+            createDom(children[i], domNode, undefined, projectionOptions);
+        }
+    };
+    var initPropertiesAndChildren = function (domNode, vnode, projectionOptions) {
+        addChildren(domNode, vnode.children, projectionOptions);
+        // children before properties, needed for value property of <select>.
+        if (vnode.text) {
+            domNode.textContent = vnode.text;
+        }
+        setProperties(domNode, vnode.properties, projectionOptions);
+        if (vnode.properties && vnode.properties.afterCreate) {
+            vnode.properties.afterCreate.apply(vnode.properties.bind || vnode.properties, [
+                domNode,
+                projectionOptions,
+                vnode.vnodeSelector,
+                vnode.properties,
+                vnode.children
+            ]);
+        }
+    };
+    createDom = function (vnode, parentNode, insertBefore, projectionOptions) {
+        var domNode, i, c, start = 0, type, found;
+        var vnodeSelector = vnode.vnodeSelector;
+        if (vnodeSelector === '') {
+            domNode = vnode.domNode = document.createTextNode(vnode.text);
+            if (insertBefore !== undefined) {
+                parentNode.insertBefore(domNode, insertBefore);
+            } else {
+                parentNode.appendChild(domNode);
+            }
+        } else {
+            for (i = 0; i <= vnodeSelector.length; ++i) {
+                c = vnodeSelector.charAt(i);
+                if (i === vnodeSelector.length || c === '.' || c === '#') {
+                    type = vnodeSelector.charAt(start - 1);
+                    found = vnodeSelector.slice(start, i);
+                    if (type === '.') {
+                        domNode.classList.add(found);
+                    } else if (type === '#') {
+                        domNode.id = found;
+                    } else {
+                        if (found === 'svg') {
+                            projectionOptions = extend(projectionOptions, { namespace: NAMESPACE_SVG });
+                        }
+                        if (projectionOptions.namespace !== undefined) {
+                            domNode = vnode.domNode = document.createElementNS(projectionOptions.namespace, found);
+                        } else {
+                            domNode = vnode.domNode = document.createElement(found);
+                        }
+                        if (insertBefore !== undefined) {
+                            parentNode.insertBefore(domNode, insertBefore);
+                        } else {
+                            parentNode.appendChild(domNode);
+                        }
+                    }
+                    start = i + 1;
+                }
+            }
+            initPropertiesAndChildren(domNode, vnode, projectionOptions);
+        }
+    };
+    updateDom = function (previous, vnode, projectionOptions) {
+        var domNode = previous.domNode;
+        var textUpdated = false;
+        if (previous === vnode) {
+            return false;    // By contract, VNode objects may not be modified anymore after passing them to maquette
+        }
+        var updated = false;
+        if (vnode.vnodeSelector === '') {
+            if (vnode.text !== previous.text) {
+                var newVNode = document.createTextNode(vnode.text);
+                domNode.parentNode.replaceChild(newVNode, domNode);
+                vnode.domNode = newVNode;
+                textUpdated = true;
+                return textUpdated;
+            }
+        } else {
+            if (vnode.vnodeSelector.lastIndexOf('svg', 0) === 0) {
+                projectionOptions = extend(projectionOptions, { namespace: NAMESPACE_SVG });
+            }
+            if (previous.text !== vnode.text) {
+                updated = true;
+                if (vnode.text === undefined) {
+                    domNode.removeChild(domNode.firstChild);    // the only textnode presumably
+                } else {
+                    domNode.textContent = vnode.text;
+                }
+            }
+            updated = updateChildren(vnode, domNode, previous.children, vnode.children, projectionOptions) || updated;
+            updated = updateProperties(domNode, previous.properties, vnode.properties, projectionOptions) || updated;
+            if (vnode.properties && vnode.properties.afterUpdate) {
+                vnode.properties.afterUpdate.apply(vnode.properties.bind || vnode.properties, [
+                    domNode,
+                    projectionOptions,
+                    vnode.vnodeSelector,
+                    vnode.properties,
+                    vnode.children
+                ]);
+            }
+        }
+        if (updated && vnode.properties && vnode.properties.updateAnimation) {
+            vnode.properties.updateAnimation(domNode, vnode.properties, previous.properties);
+        }
+        vnode.domNode = previous.domNode;
+        return textUpdated;
+    };
+    var createProjection = function (vnode, projectionOptions) {
+        return {
+            update: function (updatedVnode) {
+                if (vnode.vnodeSelector !== updatedVnode.vnodeSelector) {
+                    throw new Error('The selector for the root VNode may not be changed. (consider using dom.merge and add one extra level to the virtual DOM)');
+                }
+                updateDom(vnode, updatedVnode, projectionOptions);
+                vnode = updatedVnode;
+            },
+            domNode: vnode.domNode
+        };
+    };
+    ;
+    // The other two parameters are not added here, because the Typescript compiler creates surrogate code for desctructuring 'children'.
+    exports.h = function (selector) {
+        var properties = arguments[1];
+        if (typeof selector !== 'string') {
+            throw new Error();
+        }
+        var childIndex = 1;
+        if (properties && !properties.hasOwnProperty('vnodeSelector') && !Array.isArray(properties) && typeof properties === 'object') {
+            childIndex = 2;
+        } else {
+            // Optional properties argument was omitted
+            properties = undefined;
+        }
+        var text = undefined;
+        var children = undefined;
+        var argsLength = arguments.length;
+        // Recognize a common special case where there is only a single text node
+        if (argsLength === childIndex + 1) {
+            var onlyChild = arguments[childIndex];
+            if (typeof onlyChild === 'string') {
+                text = onlyChild;
+            } else if (onlyChild !== undefined && onlyChild !== null && onlyChild.length === 1 && typeof onlyChild[0] === 'string') {
+                text = onlyChild[0];
+            }
+        }
+        if (text === undefined) {
+            children = [];
+            for (; childIndex < argsLength; childIndex++) {
+                var child = arguments[childIndex];
+                if (child === null || child === undefined) {
+                    continue;
+                } else if (Array.isArray(child)) {
+                    appendChildren(selector, child, children);
+                } else if (child.hasOwnProperty('vnodeSelector')) {
+                    children.push(child);
+                } else {
+                    children.push(toTextVNode(child));
+                }
+            }
+        }
+        return {
+            vnodeSelector: selector,
+            properties: properties,
+            children: children,
+            text: text === '' ? undefined : text,
+            domNode: null
+        };
+    };
+    /**
+ * Contains simple low-level utility functions to manipulate the real DOM.
+ */
+    exports.dom = {
+        /**
+     * Creates a real DOM tree from `vnode`. The [[Projection]] object returned will contain the resulting DOM Node in
+     * its [[Projection.domNode|domNode]] property.
+     * This is a low-level method. Users wil typically use a [[Projector]] instead.
+     * @param vnode - The root of the virtual DOM tree that was created using the [[h]] function. NOTE: [[VNode]]
+     * objects may only be rendered once.
+     * @param projectionOptions - Options to be used to create and update the projection.
+     * @returns The [[Projection]] which also contains the DOM Node that was created.
+     */
+        create: function (vnode, projectionOptions) {
+            projectionOptions = applyDefaultProjectionOptions(projectionOptions);
+            createDom(vnode, document.createElement('div'), undefined, projectionOptions);
+            return createProjection(vnode, projectionOptions);
+        },
+        /**
+     * Appends a new childnode to the DOM which is generated from a [[VNode]].
+     * This is a low-level method. Users wil typically use a [[Projector]] instead.
+     * @param parentNode - The parent node for the new childNode.
+     * @param vnode - The root of the virtual DOM tree that was created using the [[h]] function. NOTE: [[VNode]]
+     * objects may only be rendered once.
+     * @param projectionOptions - Options to be used to create and update the [[Projection]].
+     * @returns The [[Projection]] that was created.
+     */
+        append: function (parentNode, vnode, projectionOptions) {
+            projectionOptions = applyDefaultProjectionOptions(projectionOptions);
+            createDom(vnode, parentNode, undefined, projectionOptions);
+            return createProjection(vnode, projectionOptions);
+        },
+        /**
+     * Inserts a new DOM node which is generated from a [[VNode]].
+     * This is a low-level method. Users wil typically use a [[Projector]] instead.
+     * @param beforeNode - The node that the DOM Node is inserted before.
+     * @param vnode - The root of the virtual DOM tree that was created using the [[h]] function.
+     * NOTE: [[VNode]] objects may only be rendered once.
+     * @param projectionOptions - Options to be used to create and update the projection, see [[createProjector]].
+     * @returns The [[Projection]] that was created.
+     */
+        insertBefore: function (beforeNode, vnode, projectionOptions) {
+            projectionOptions = applyDefaultProjectionOptions(projectionOptions);
+            createDom(vnode, beforeNode.parentNode, beforeNode, projectionOptions);
+            return createProjection(vnode, projectionOptions);
+        },
+        /**
+     * Merges a new DOM node which is generated from a [[VNode]] with an existing DOM Node.
+     * This means that the virtual DOM and the real DOM will have one overlapping element.
+     * Therefore the selector for the root [[VNode]] will be ignored, but its properties and children will be applied to the Element provided.
+     * This is a low-level method. Users wil typically use a [[Projector]] instead.
+     * @param domNode - The existing element to adopt as the root of the new virtual DOM. Existing attributes and childnodes are preserved.
+     * @param vnode - The root of the virtual DOM tree that was created using the [[h]] function. NOTE: [[VNode]] objects
+     * may only be rendered once.
+     * @param projectionOptions - Options to be used to create and update the projection, see [[createProjector]].
+     * @returns The [[Projection]] that was created.
+     */
+        merge: function (element, vnode, projectionOptions) {
+            projectionOptions = applyDefaultProjectionOptions(projectionOptions);
+            vnode.domNode = element;
+            initPropertiesAndChildren(element, vnode, projectionOptions);
+            return createProjection(vnode, projectionOptions);
+        }
+    };
+    /**
+ * Creates a [[CalculationCache]] object, useful for caching [[VNode]] trees.
+ * In practice, caching of [[VNode]] trees is not needed, because achieving 60 frames per second is almost never a problem.
+ * For more information, see [[CalculationCache]].
+ *
+ * @param <Result> The type of the value that is cached.
+ */
+    exports.createCache = function () {
+        var cachedInputs = undefined;
+        var cachedOutcome = undefined;
+        var result = {
+            invalidate: function () {
+                cachedOutcome = undefined;
+                cachedInputs = undefined;
+            },
+            result: function (inputs, calculation) {
+                if (cachedInputs) {
+                    for (var i = 0; i < inputs.length; i++) {
+                        if (cachedInputs[i] !== inputs[i]) {
+                            cachedOutcome = undefined;
+                        }
+                    }
+                }
+                if (!cachedOutcome) {
+                    cachedOutcome = calculation();
+                    cachedInputs = inputs;
+                }
+                return cachedOutcome;
+            }
+        };
+        return result;
+    };
+    /**
+ * Creates a {@link Mapping} instance that keeps an array of result objects synchronized with an array of source objects.
+ * See {@link http://maquettejs.org/docs/arrays.html|Working with arrays}.
+ *
+ * @param <Source>       The type of source items. A database-record for instance.
+ * @param <Target>       The type of target items. A [[Component]] for instance.
+ * @param getSourceKey   `function(source)` that must return a key to identify each source object. The result must either be a string or a number.
+ * @param createResult   `function(source, index)` that must create a new result object from a given source. This function is identical
+ *                       to the `callback` argument in `Array.map(callback)`.
+ * @param updateResult   `function(source, target, index)` that updates a result to an updated source.
+ */
+    exports.createMapping = function (getSourceKey, createResult, updateResult) {
+        var keys = [];
+        var results = [];
+        return {
+            results: results,
+            map: function (newSources) {
+                var newKeys = newSources.map(getSourceKey);
+                var oldTargets = results.slice();
+                var oldIndex = 0;
+                for (var i = 0; i < newSources.length; i++) {
+                    var source = newSources[i];
+                    var sourceKey = newKeys[i];
+                    if (sourceKey === keys[oldIndex]) {
+                        results[i] = oldTargets[oldIndex];
+                        updateResult(source, oldTargets[oldIndex], i);
+                        oldIndex++;
+                    } else {
+                        var found = false;
+                        for (var j = 1; j < keys.length + 1; j++) {
+                            var searchIndex = (oldIndex + j) % keys.length;
+                            if (keys[searchIndex] === sourceKey) {
+                                results[i] = oldTargets[searchIndex];
+                                updateResult(newSources[i], oldTargets[searchIndex], i);
+                                oldIndex = searchIndex + 1;
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (!found) {
+                            results[i] = createResult(source, i);
+                        }
+                    }
+                }
+                results.length = newSources.length;
+                keys = newKeys;
+            }
+        };
+    };
+    /**
+ * Creates a [[Projector]] instance using the provided projectionOptions.
+ *
+ * For more information, see [[Projector]].
+ *
+ * @param projectionOptions   Options that influence how the DOM is rendered and updated.
+ */
+    exports.createProjector = function (projectorOptions) {
+        var projector;
+        var projectionOptions = applyDefaultProjectionOptions(projectorOptions);
+        projectionOptions.eventHandlerInterceptor = function (propertyName, eventHandler, domNode, properties) {
+            return function () {
+                // intercept function calls (event handlers) to do a render afterwards.
+                projector.scheduleRender();
+                return eventHandler.apply(properties.bind || this, arguments);
+            };
+        };
+        var renderCompleted = true;
+        var scheduled;
+        var stopped = false;
+        var projections = [];
+        var renderFunctions = [];
+        // matches the projections array
+        var doRender = function () {
+            scheduled = undefined;
+            if (!renderCompleted) {
+                return;    // The last render threw an error, it should be logged in the browser console.
+            }
+            renderCompleted = false;
+            for (var i = 0; i < projections.length; i++) {
+                var updatedVnode = renderFunctions[i]();
+                projections[i].update(updatedVnode);
+            }
+            renderCompleted = true;
+        };
+        projector = {
+            scheduleRender: function () {
+                if (!scheduled && !stopped) {
+                    scheduled = requestAnimationFrame(doRender);
+                }
+            },
+            stop: function () {
+                if (scheduled) {
+                    cancelAnimationFrame(scheduled);
+                    scheduled = undefined;
+                }
+                stopped = true;
+            },
+            resume: function () {
+                stopped = false;
+                renderCompleted = true;
+                projector.scheduleRender();
+            },
+            append: function (parentNode, renderMaquetteFunction) {
+                projections.push(exports.dom.append(parentNode, renderMaquetteFunction(), projectionOptions));
+                renderFunctions.push(renderMaquetteFunction);
+            },
+            insertBefore: function (beforeNode, renderMaquetteFunction) {
+                projections.push(exports.dom.insertBefore(beforeNode, renderMaquetteFunction(), projectionOptions));
+                renderFunctions.push(renderMaquetteFunction);
+            },
+            merge: function (domNode, renderMaquetteFunction) {
+                projections.push(exports.dom.merge(domNode, renderMaquetteFunction(), projectionOptions));
+                renderFunctions.push(renderMaquetteFunction);
+            },
+            replace: function (domNode, renderMaquetteFunction) {
+                var vnode = renderMaquetteFunction();
+                createDom(vnode, domNode.parentNode, domNode, projectionOptions);
+                domNode.parentNode.removeChild(domNode);
+                projections.push(createProjection(vnode, projectionOptions));
+                renderFunctions.push(renderMaquetteFunction);
+            },
+            detach: function (renderMaquetteFunction) {
+                for (var i = 0; i < renderFunctions.length; i++) {
+                    if (renderFunctions[i] === renderMaquetteFunction) {
+                        renderFunctions.splice(i, 1);
+                        return projections.splice(i, 1)[0];
+                    }
+                }
+                throw new Error('renderMaquetteFunction was not found');
+            }
+        };
+        return projector;
+    };
+}));
+
+
+},{}],2:[function(require,module,exports){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _maquette = require('maquette');
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var productContents = ['title', 'qty', 'button'];
+var productTemplates = {
+  'title': function title(data) {
+    return (0, _maquette.h)('h2', data.name);
+  },
+  'qty': function qty(data) {
+    return (0, _maquette.h)('p', data.qty);
+  },
+  'button': function button(data, events) {
+    return (0, _maquette.h)('button', {
+      onclick: events.handleClick
+    }, 'add 1');
+  }
+};
+
+var Product = function () {
+  function Product() {
+    var _this = this;
+
+    _classCallCheck(this, Product);
+
+    this.data = {
+      name: 'Hat',
+      qty: 0
+    };
+    this.events = {
+      handleClick: function handleClick(evt) {
+        _this.data.qty++;
+      }
+    };
+  }
+
+  _createClass(Product, [{
+    key: 'render',
+    value: function render(projector) {
+      projector.append(document.body, this.template.bind(this));
+    }
+  }, {
+    key: 'template',
+    value: function template() {
+      return (0, _maquette.h)('div.product', this.children);
+    }
+  }, {
+    key: 'children',
+    get: function get() {
+      var _this2 = this;
+
+      return productContents.map(function (item) {
+        return productTemplates[item](_this2.data, _this2.events);
+      });
+    }
+  }]);
+
+  return Product;
+}();
+
+var projector = (0, _maquette.createProjector)();
+var product = new Product();
+product.render(projector);
+
+},{"maquette":1}]},{},[2]);

@@ -21,7 +21,9 @@
   },
   "dependencies": {
     "handlebars": "^4.0.5",
+    "maquette": "^2.3.3",
     "minifyify": "^7.3.3",
-    "shopify-buy": "^0.1.6"
+    "shopify-buy": "^0.1.6",
+    "virtual-dom": "^2.1.1"
   }
 }
