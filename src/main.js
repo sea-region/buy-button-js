@@ -16,7 +16,7 @@ const productTemplates = {
 }
 
 class Product {
-  constructor() {
+  constructor(props) {
     this.data = {
       name: 'Hat',
       qty: 0
@@ -26,6 +26,7 @@ class Product {
         this.data.qty++;
       }
     }
+    this.templates = Object.assign({}, productTemplates, props.templates);
   }
 
   render(projector) {
@@ -45,8 +46,15 @@ class Product {
   }
 }
 
-
 const projector = createProjector();
-let product = new Product();
+let product = new Product({
+  templates: {
+    title: (data) => {
+      return h('h3',
+              h('small', 'featured'),
+              data.title)
+    }
+  }
+});
 product.render(projector);
 

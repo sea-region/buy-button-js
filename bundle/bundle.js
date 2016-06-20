@@ -804,7 +804,7 @@ var productTemplates = {
 };
 
 var Product = function () {
-  function Product() {
+  function Product(props) {
     var _this = this;
 
     _classCallCheck(this, Product);
@@ -818,6 +818,7 @@ var Product = function () {
         _this.data.qty++;
       }
     };
+    this.templates = Object.assign({}, productTemplates, props.templates);
   }
 
   _createClass(Product, [{
@@ -845,7 +846,13 @@ var Product = function () {
 }();
 
 var projector = (0, _maquette.createProjector)();
-var product = new Product();
+var product = new Product({
+  templates: {
+    title: function title(data) {
+      return (0, _maquette.h)('h3', (0, _maquette.h)('small', 'featured'), data.title);
+    }
+  }
+});
 product.render(projector);
 
 },{"maquette":1}]},{},[2]);
