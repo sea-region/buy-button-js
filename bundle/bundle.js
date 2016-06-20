@@ -1084,10 +1084,11 @@ module.exports = [
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _templateObject = _taggedTemplateLiteral(["<button onclick=", ">Buy</button>"], ["<button onclick=", ">Buy</button>"]),
-    _templateObject2 = _taggedTemplateLiteral(["\n      <div>\n        ", "\n        ", "\n      </div>\n    "], ["\n      <div>\n        ", "\n        ", "\n      </div>\n    "]),
+    _templateObject2 = _taggedTemplateLiteral(["<div>\n      ", "\n    </div>"], ["<div>\n      ", "\n    </div>"]),
     _templateObject3 = _taggedTemplateLiteral(["\n      <div>\n        <h3>Your cart</h3>\n        <ul>\n          ", "\n        </ul>\n      </div>\n    "], ["\n      <div>\n        <h3>Your cart</h3>\n        <ul>\n          ", "\n        </ul>\n      </div>\n    "]),
     _templateObject4 = _taggedTemplateLiteral(["<li>", "</li>"], ["<li>", "</li>"]),
-    _templateObject5 = _taggedTemplateLiteral(["<h1><small>Featured Product:</small> ", "</h1>"], ["<h1><small>Featured Product:</small> ", "</h1>"]);
+    _templateObject5 = _taggedTemplateLiteral(["<h1><small>Featured Product:</small> ", "</h1>"], ["<h1><small>Featured Product:</small> ", "</h1>"]),
+    _templateObject6 = _taggedTemplateLiteral(["<button onclick=", ">Buy NOW</button>"], ["<button onclick=", ">Buy NOW</button>"]);
 
 var _yoYo = require("yo-yo");
 
@@ -1115,6 +1116,7 @@ var Product = function () {
   _createClass(Product, [{
     key: "onclick",
     value: function onclick(e) {
+      console.log(this);
       this.props.onclick(this.data);
     }
   }, {
@@ -1130,9 +1132,13 @@ var Product = function () {
   }, {
     key: "render",
     value: function render() {
+      var _this = this;
+
       var defaultTemplates = this.templates(this.data);
       var templates = Object.assign({}, defaultTemplates, this.props.templates);
-      return (0, _yoYo2.default)(_templateObject2, templates.title(this.data), templates.button(this.onclick.bind(this)));
+      return (0, _yoYo2.default)(_templateObject2, Object.keys(templates).map(function (key) {
+        return templates[key](_this.data, { onclick: _this.onclick.bind(_this) });
+      }));
     }
   }]);
 
@@ -1192,16 +1198,15 @@ var UI = function () {
   return UI;
 }();
 
-function pass() {
-  return arguments;
-}
-
 var ui = new UI();
 
 ui.createProduct({
   templates: {
     title: function title(data) {
       return (0, _yoYo2.default)(_templateObject5, data.title);
+    },
+    button: function button(data, events) {
+      return (0, _yoYo2.default)(_templateObject6, events.onclick);
     }
   }
 });

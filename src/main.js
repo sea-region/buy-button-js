@@ -12,6 +12,7 @@ class Product {
   }
 
   onclick(e) {
+    console.log(this);
     this.props.onclick(this.data);
   }
 
@@ -27,12 +28,11 @@ class Product {
   render() {
     let defaultTemplates = this.templates(this.data);
     let templates = Object.assign({}, defaultTemplates, this.props.templates);
-    return yo`
-      <div>
-        ${templates.title(this.data)}
-        ${templates.button(this.onclick.bind(this))}
-      </div>
-    `
+    return yo`<div>
+      ${Object.keys(templates).map(key => {
+        return templates[key](this.data, {onclick: this.onclick.bind(this)})
+      })}
+    </div>`
   }
 }
 
@@ -80,16 +80,15 @@ class UI {
   }
 }
 
-function pass() {
-  return arguments;
-}
-
 const ui = new UI();
 
 ui.createProduct({
   templates: {
     title: function (data) {
        return yo`<h1><small>Featured Product:</small> ${data.title}</h1>`
-     }
+     },
+    button: function (data, events) {
+      return yo`<button onclick=${events.onclick}>Buy NOW</button>`
+    }
   }
 });
