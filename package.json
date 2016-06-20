@@ -22,6 +22,7 @@
     "deepmerge": "^0.2.10",
     "handlebars": "^4.0.5",
     "minifyify": "^7.3.3",
-    "shopify-buy": "^0.1.7"
+    "shopify-buy": "^0.1.7",
+    "yo-yo": "^1.2.1"
   }
 }
