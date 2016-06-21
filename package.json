@@ -20,6 +20,7 @@
     "watchify": "^3.7.0"
   },
   "dependencies": {
+    "deepmerge": "^0.2.10",
     "handlebars": "^4.0.5",
     "maquette": "^2.3.3",
     "minifyify": "^7.3.3",

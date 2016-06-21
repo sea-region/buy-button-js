@@ -1,6 +1,60 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 (function (root, factory) {
     if (typeof define === 'function' && define.amd) {
+        define(factory);
+    } else if (typeof exports === 'object') {
+        module.exports = factory();
+    } else {
+        root.deepmerge = factory();
+    }
+}(this, function () {
+
+return function deepmerge(target, src) {
+    var array = Array.isArray(src);
+    var dst = array && [] || {};
+
+    if (array) {
+        target = target || [];
+        dst = dst.concat(target);
+        src.forEach(function(e, i) {
+            if (typeof dst[i] === 'undefined') {
+                dst[i] = e;
+            } else if (typeof e === 'object') {
+                dst[i] = deepmerge(target[i], e);
+            } else {
+                if (target.indexOf(e) === -1) {
+                    dst.push(e);
+                }
+            }
+        });
+    } else {
+        if (target && typeof target === 'object') {
+            Object.keys(target).forEach(function (key) {
+                dst[key] = target[key];
+            })
+        }
+        Object.keys(src).forEach(function (key) {
+            if (typeof src[key] !== 'object' || !src[key]) {
+                dst[key] = src[key];
+            }
+            else {
+                if (!target[key]) {
+                    dst[key] = src[key];
+                } else {
+                    dst[key] = deepmerge(target[key], src[key]);
+                }
+            }
+        });
+    }
+
+    return dst;
+}
+
+}));
+
+},{}],2:[function(require,module,exports){
+(function (root, factory) {
+    if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
         define(['exports'], factory);
     } else if (typeof exports === 'object' && typeof exports.nodeName !== 'string') {
@@ -779,80 +833,185 @@
 }));
 
 
-},{}],2:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _maquette = require('maquette');
 
+var _deepmerge = require('deepmerge');
+
+var _deepmerge2 = _interopRequireDefault(_deepmerge);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var productContents = ['title', 'qty', 'button'];
-var productTemplates = {
-  'title': function title(data) {
-    return (0, _maquette.h)('h2', data.name);
-  },
-  'qty': function qty(data) {
-    return (0, _maquette.h)('p', data.qty);
-  },
-  'button': function button(data, events) {
-    return (0, _maquette.h)('button', {
-      onclick: events.handleClick
-    }, 'add 1');
-  }
-};
+var Component = function () {
+  function Component(config, defaults) {
+    _classCallCheck(this, Component);
 
-var Product = function () {
-  function Product(props) {
-    var _this = this;
-
-    _classCallCheck(this, Product);
-
-    this.data = {
-      name: 'Hat',
-      qty: 0
-    };
-    this.events = {
-      handleClick: function handleClick(evt) {
-        _this.data.qty++;
-      }
-    };
-    this.templates = Object.assign({}, productTemplates, props.templates);
+    var mergedConfig = (0, _deepmerge2.default)(defaults, config);
+    this.templates = mergedConfig.templates;
+    this.events = mergedConfig.events;
+    this.options = mergedConfig.options;
   }
 
-  _createClass(Product, [{
+  _createClass(Component, [{
     key: 'render',
-    value: function render(projector) {
-      projector.append(document.body, this.template.bind(this));
+    value: function render() {
+      projector.append(this.options.node, this.template.bind(this));
     }
   }, {
     key: 'template',
     value: function template() {
-      return (0, _maquette.h)('div.product', this.children);
+      return (0, _maquette.h)('div.' + this.options.className, this.children);
     }
   }, {
     key: 'children',
     get: function get() {
-      var _this2 = this;
+      var _this = this;
 
-      return productContents.map(function (item) {
-        return productTemplates[item](_this2.data, _this2.events);
+      return this.options.contents.map(function (item) {
+        return _this.templates[item](_this.data, _this.events);
       });
     }
   }]);
 
-  return Product;
+  return Component;
 }();
 
 var projector = (0, _maquette.createProjector)();
-var product = new Product({
+
+var productDefaults = {
+  options: {
+    dest: 'cart',
+    contents: ['title', 'button'],
+    className: 'product'
+  },
+  templates: {
+    'title': function title(data) {
+      return (0, _maquette.h)('h2', data.name);
+    },
+    'button': function button(data, events) {
+      return (0, _maquette.h)('button', {
+        onclick: events.handleClick
+      }, 'add to cart');
+    }
+  },
+  events: {}
+};
+
+var Product = function (_Component) {
+  _inherits(Product, _Component);
+
+  function Product(config) {
+    _classCallCheck(this, Product);
+
+    var _this2 = _possibleConstructorReturn(this, Object.getPrototypeOf(Product).call(this, config, productDefaults));
+
+    _this2.data = {
+      id: 1,
+      title: 'hat'
+    };
+    _this2.events.handleClick = function (evt) {
+      _this2.events.addToCart(_this2.data);
+    };
+    _this2.render();
+    return _this2;
+  }
+
+  return Product;
+}(Component);
+
+var cartDefaults = {
+  templates: {
+    title: function title() {
+      return (0, _maquette.h)('h3', 'Your Cart');
+    },
+    items: function items(data) {
+      return data.lineItems.map(function (item) {
+        return (0, _maquette.h)('h5#' + item.id, item.title);
+      });
+    }
+  },
+  options: {
+    className: 'cart',
+    contents: ['title', 'items'],
+    node: document.body
+  }
+};
+
+var Cart = function (_Component2) {
+  _inherits(Cart, _Component2);
+
+  function Cart() {
+    var config = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
+    _classCallCheck(this, Cart);
+
+    var _this3 = _possibleConstructorReturn(this, Object.getPrototypeOf(Cart).call(this, config, cartDefaults));
+
+    _this3.data = {
+      lineItems: []
+    };
+    _this3.render();
+    return _this3;
+  }
+
+  _createClass(Cart, [{
+    key: 'addItem',
+    value: function addItem(product) {
+      this.data.lineItems.push(product);
+    }
+  }]);
+
+  return Cart;
+}(Component);
+
+var UI = function () {
+  function UI() {
+    _classCallCheck(this, UI);
+
+    this.products = [];
+    this.cart = new Cart();
+  }
+
+  _createClass(UI, [{
+    key: 'createProduct',
+    value: function createProduct(config) {
+      var events = {
+        addToCart: this.addToCart.bind(this)
+      };
+      var productConfig = Object.assign({}, config, { events: events });
+      this.products.push(new Product(productConfig));
+    }
+  }, {
+    key: 'addToCart',
+    value: function addToCart(variant) {
+      this.cart.addItem(variant);
+    }
+  }]);
+
+  return UI;
+}();
+
+var ui = new UI();
+
+ui.createProduct({
   templates: {
     title: function title(data) {
       return (0, _maquette.h)('h3', (0, _maquette.h)('small', 'featured'), data.title);
     }
+  },
+  options: {
+    node: document.body
   }
 });
-product.render(projector);
 
-},{"maquette":1}]},{},[2]);
+},{"deepmerge":1,"maquette":2}]},{},[3]);
