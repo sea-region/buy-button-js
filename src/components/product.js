@@ -1,69 +1,25 @@
-import ComponentContainer from './container';
-import productDefaults from '../defaults/product';
-import View from './view';
 import merge from 'deepmerge';
+import productDefaults from '../defaults/product';
+import Component from './component';
 
-export default class Product extends ComponentContainer {
-  constructor(config, props, events = {}) {
-    const productConfig = merge(productDefaults, config);
-    super(productConfig, props);
-
-    this.events = Object.assign({}, events, {
-      addVariantToCart: this.onCartAdd.bind(this)
-    })
+export default class Product extends Component {
+  constructor(config, data = {}) {
+    super(config, data, productDefaults);
   }
 
-  getData() {
-    return this.props.client.fetchProduct(this.config.id).then((product) => {
+  get events() {
+    return {
+      'click .button': this.addToCart.bind(this)
+    }
+  }
+
+  addToCart() {
+    this.callbacks.addToCart(this.data);
+  }
+
+  fetch() {
+    return this.client.fetchProduct(this.id).then(product => {
       return product;
     });
-  }
-
-  removeContents(item) {
-    let index = this.config.contents.indexOf(item);
-    if (index > -1) {
-      this.config.contents.splice(index, 1);
-    }
-  }
-
-  wrapContents(item) {
-    this.config.contents.unshift(`${item}Open`);
-    this.config.contents.push(`${item}Close`);
-  }
-
-  onCartAdd(data) {
-    this.props.callbacks.addVariantToCart(data.data);
-  }
-
-  selectChange(view, event) {
-    let target = event.target;
-    let selectedValue = target.options[target.selectedIndex].value;
-    let name = target.getAttribute('name');
-    this.updateSelectedVariant(name, selectedValue);
-  }
-
-  updateSelectedVariant(name, value) {
-    let selectedOption = this.props.model.options.filter((option, index) => {
-      return option.name === name;
-    })[0];
-    selectedOption.selected = value;
-    this.render();
-  }
-
-  render(wrapper) {
-    super.render(wrapper);
-    let parent = this.wrapper.querySelector('[data-include]');
-
-    if (this.config.contents.indexOf('variantSelection') > -1) {
-      this.props.model.options.forEach((optionModel) => {
-        let option = new View(this.config.optionConfig, optionModel, {
-          'selectVariant': this.selectChange.bind(this)
-        });
-        let wrapper = this._createWrapper(parent, this.config.optionConfig.className);
-        option.render(wrapper);
-      });
-    }
-
-    this.resize();
   }
 }
