@@ -1,5 +1,6 @@
-import {h, createProjector} from 'maquette';
 import merge from 'deepmerge';
+import yo from 'yo-yo';
+import h from 'hyperscript';
 
 class Component {
   constructor(config, defaults) {
@@ -8,7 +9,13 @@ class Component {
   }
 
   render() {
-    projector.append(this.options.node, this.template.bind(this));
+    this.el = this.template();
+    this.options.node.appendChild(this.el);
+  }
+
+  update() {
+    // use yo's patched version of morphdom because it copies events
+    yo.update(this.el, this.template());
   }
 
   get children() {
@@ -22,8 +29,6 @@ class Component {
   }
 }
 
-const projector = createProjector();
-
 const productDefaults = {
   options: {
     dest: 'cart',
@@ -36,7 +41,9 @@ const productDefaults = {
     },
     'button': (data, events) => {
       return h('button', {
-        onclick: events.handleClick
+        onclick: (e) => {
+          events.handleClick()
+        }
       }, 'add to cart')
     }
   },
@@ -86,6 +93,7 @@ class Cart extends Component {
 
   addItem(product) {
     this.data.lineItems.push(product);
+    this.update();
   }
 }
 
