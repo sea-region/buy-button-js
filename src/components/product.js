@@ -138,15 +138,14 @@ export default class Product extends Component {
   }
 
   get decoratedOptions() {
-    const selections = this.selections;
     return this.model.options.map((option) => {
       return {
         name: option.name,
-        values: option.value.map((value) => {
+        values: option.values.map((value) => {
           return {
             name: value,
             selected: value === option.selected,
-            disabled: !this.optionValueCanBeSelected(selections, option.name, value)
+            disabled: !this.optionValueCanBeSelected(Object.assign({}, this.selections), option.name, value)
           }
         })
       }
