@@ -6,13 +6,13 @@ const cartTemplates = {
               <span class="visuallyhidden">Close</span>
              </button>
           </div>`,
-  lineItems: '<div class="{{data.classes.cartScroll}}"><div class="{{data.classes.lineItems}}">{{{data.childrenHtml}}}</div></div>',
-  footer: `<div class="{{data.classes.footer}}">
+  lineItems: '<div class="{{data.classes.cartScroll}}">{{#data.isEmpty}}<div class="cart--empty">{{data.text.empty}}</div>{{/data.isEmpty}}<div class="{{data.classes.lineItems}}">{{{data.childrenHtml}}}</div></div>',
+  footer: `{{#data.notEmpty}}<div class="{{data.classes.footer}}">
             <p class="{{data.classes.subtotalText}}">{{data.text.total}}</p>
             <p class="{{data.classes.subtotal}}"><span class="{{data.classes.currency}}"></span>\${{data.subtotal}}</p>
             <p class="{{data.classes.notice}}">{{data.text.notice}}</p>
             <button class="{{data.classes.button}}" type="button">{{data.text.button}}</button>
-          </div>`,
+          </div>{{/data.notEmpty}}`,
 };
 
 export default cartTemplates;

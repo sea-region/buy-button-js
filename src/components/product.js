@@ -123,7 +123,7 @@ export default class Product extends Component {
 
   fetchData() {
     return this.props.client.fetchProduct(this.id).then((model) => {
-      model.selectedQuantity = 0;
+      model.selectedQuantity = 1;
       return model;
     });
   }
@@ -184,7 +184,7 @@ export default class Product extends Component {
   }
 
   closeCartOnBgClick(evt) {
-    if (!this.wrapper.querySelector(`.${this.classes.button}`).contains(evt.target)) {
+    if (!this.wrapper.querySelector(`.${this.classes.button}`).contains(evt.target) && !this.wrapper.querySelector(`.${this.classes.quantity}`).contains(evt.target)) {
       this.cart.close();
     }
   }

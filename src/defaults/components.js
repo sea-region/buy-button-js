@@ -95,6 +95,7 @@ const defaults = {
       total: 'Total',
       currency: 'CAD',
       notice: 'Shipping and discount codes are added at checkout.',
+      empty: 'Cart is empty',
     },
   },
   lineItem: {

@@ -144,3 +144,7 @@ $cart-item-height: 65px;
     color: darken($color-title, 5%);
   }
 }
+
+.cart--empty {
+  padding: $gutter;
+}
