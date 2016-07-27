@@ -3,6 +3,7 @@ import ProductSet from './components/product-set';
 import Cart from './components/cart';
 import Collection from './components/collection';
 import hostStyles from './styles/host/main';
+import throttle from './utils/throttle';
 
 const DATA_ATTRIBUTE = 'data-shopify-buy-ui';
 const imageCache = {};
@@ -10,13 +11,13 @@ const imageCache = {};
 export default class UI {
   constructor(client) {
     this.client = client;
+    this.iframeComponents = [];
     this.components = {
       product: [],
       cart: [],
       collection: [],
       productSet: [],
     };
-
     this.componentTypes = {
       product: Product,
       cart: Cart,
@@ -24,6 +25,8 @@ export default class UI {
       productSet: ProductSet,
     };
     this._appendStyleTag();
+    this._resizeAdjust();
+    this._hostClick();
   }
 
   createCart(config) {
@@ -43,7 +46,7 @@ export default class UI {
     config.node = config.node || this._queryEntryNode();
     const component = new this.componentTypes[type](config, this.componentProps);
     this.components[type].push(component);
-    return component.init().then(() => component);
+    return component.init();
   }
 
   destroyComponent(type, id) {
@@ -82,4 +85,21 @@ export default class UI {
     }
     document.head.appendChild(styleTag);
   }
+
+  _hostClick() {
+    document.addEventListener('click', () => {
+      if (this.components.cart[0] && this.components.cart[0].isVisible) {
+        this.components.cart[0].close();
+      }
+    });
+  }
+
+  _resizeAdjust() {
+    throttle('resize', 'safeResize');
+    window.addEventListener('safeResize', () => {
+      this.components.collection.forEach((collection) => collection.resize());
+      this.components.productSet.forEach((set) => set.resize());
+    });
+  }
 }
+

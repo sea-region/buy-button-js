@@ -45,12 +45,14 @@ export default class Product extends Component {
       buttonClass: this.variantAvailable ? '' : this.classes.disabled,
       hasVariants: this.hasVariants,
       buttonDisabled: !this.cart,
+      priceClass: this.model.selectedVariant.compareAtPrice ? 'price--lowered' : '',
       classes: this.classes,
     });
   }
 
   get DOMEvents() {
     return Object.assign({}, this.options.DOMEvents, {
+      click: this.closeCartOnBgClick.bind(this),
       [`change .${this.config.option.classes.select}`]: this.onOptionSelect.bind(this),
       [`click .${this.options.classes.button}`]: this.onButtonClick.bind(this),
     });
@@ -151,5 +153,11 @@ export default class Product extends Component {
     });
 
     return satisfactoryVariants.length;
+  }
+
+  closeCartOnBgClick(evt) {
+    if (!this.wrapper.querySelector(`.${this.classes.button}`).contains(evt.target)) {
+      this.cart.close();
+    }
   }
 }

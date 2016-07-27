@@ -92,9 +92,15 @@ export default class Component {
     Object.keys(this.DOMEvents).forEach((key) => {
       const [, eventName, selectorString] = key.match(delegateEventSplitter);
       const selector = selectorString.split(' ').join('.');
-      this._on(eventName, selector, (evt, target) => {
-        this.DOMEvents[key].call(this, evt, target);
-      });
+      if (selector) {
+        this._on(eventName, selector, (evt, target) => {
+          this.DOMEvents[key].call(this, evt, target);
+        });
+      } else {
+        this.wrapper.addEventListener('click', (evt) => {
+          this.DOMEvents[key].call(this, evt);
+        });
+      }
     });
   }
 
@@ -102,7 +108,21 @@ export default class Component {
     if (!this.iframe) {
       return;
     }
+    window.requestAnimationFrame(() => {
+      if (this.typeKey === 'product') {
+        this.resizeX();
+      }
+      if (this.typeKey === 'product' || this.typeKey === 'productSet') {
+        this.resizeY();
+      }
+    });
+  }
+
+  resizeY() {
     this.iframe.el.style.height = `${this.wrapper.clientHeight}px`;
+  }
+
+  resizeX() {
     this.iframe.el.style.width = `${this.wrapper.clientWidth}px`;
   }
 
@@ -177,25 +197,29 @@ export default class Component {
   }
 
   resizeAfterImgLoad() {
-    const imgs = [...this.wrapper.querySelectorAll('img')];
-    if (imgs.length) {
-      const promises = imgs.map((img) =>
-        new Promise((resolve) => {
-          if (this.props.imageCache[img.getAttribute('src')]) {
-            return resolve();
-          }
-          img.addEventListener('load', (evt) => {
-            this.props.imageCache[img.getAttribute('src')] = true;
-            return resolve(evt);
-          });
-          img.addEventListener('error', (evt) => {
-            resolve(evt);
-          });
-        })
-      );
-      return Promise.all(promises).then(() => this.resize());
+    if (this.iframe) {
+      const imgs = [...this.wrapper.querySelectorAll('img')];
+      if (this.iframe && imgs.length) {
+        const promises = imgs.map((img) =>
+          new Promise((resolve) => {
+            if (this.props.imageCache[img.getAttribute('src')]) {
+              return resolve();
+            }
+            img.addEventListener('load', (evt) => {
+              this.props.imageCache[img.getAttribute('src')] = true;
+              return resolve(evt);
+            });
+            img.addEventListener('error', (evt) => {
+              return resolve(evt);
+            });
+          })
+        );
+        return Promise.all(promises).then(() => this.resize());
+      } else {
+        return Promise.resolve(this.resize());
+      }
     } else {
-      return Promise.resolve(this.resize());
+      return Promise.resolve();
     }
   }
 
