@@ -18,6 +18,9 @@ const defaults = {
       quantity: false,
       button: true,
     },
+    optionContents: {
+      option: true,
+    },
     templates: productTemplates,
     classes: {
       wrapper: 'product-wrapper',
@@ -35,6 +38,10 @@ const defaults = {
       quantity: 'cart-item__quantity-container',
       quantityInput: 'cart-item__quantity',
       quantityButton: 'btn--seamless',
+      option: 'component-input component-input--select',
+      selectWrapper: 'shopify-select',
+      select: 'component-input--select__select',
+      label: 'component-input__label visuallyhidden',
     },
     text: {
       button: 'Add to cart',
@@ -58,18 +65,6 @@ const defaults = {
       products: 'collection-products',
     },
   },
-  option: {
-    templates: optionTemplates,
-    contents: {
-      option: true,
-    },
-    classes: {
-      option: 'component-input component-input--select',
-      wrapper: 'shopify-select',
-      select: 'component-input--select__select',
-      label: 'component-input__label visuallyhidden',
-    },
-  },
   cart: {
     iframe: true,
     templates: cartTemplates,
@@ -77,6 +72,13 @@ const defaults = {
       title: true,
       lineItems: true,
       footer: true,
+    },
+    lineItemContents: {
+      image: true,
+      variantTitle: true,
+      productTitle: true,
+      price: true,
+      quantity: true,
     },
     classes: {
       wrapper: 'cart-wrapper',
@@ -92,25 +94,6 @@ const defaults = {
       button: 'btn btn--cart-checkout',
       close: 'btn--close',
       cartScroll: 'cart-scroll',
-    },
-    text: {
-      title: 'Your cart',
-      button: 'Checkout',
-      total: 'Total',
-      currency: 'CAD',
-      notice: 'Shipping and discount codes are added at checkout.',
-    },
-  },
-  lineItem: {
-    templates: lineItemTemplates,
-    contents: {
-      image: true,
-      variantTitle: true,
-      title: true,
-      price: true,
-      quantity: true,
-    },
-    classes: {
       lineItem: 'cart-item',
       image: 'cart-item__image',
       variantTitle: 'cart-item__variant-title',
@@ -119,6 +102,13 @@ const defaults = {
       quantity: 'cart-item__quantity-container',
       quantityInput: 'cart-item__quantity',
       quantityButton: 'btn--seamless',
+    },
+    text: {
+      title: 'Your cart',
+      button: 'Checkout',
+      total: 'Total',
+      currency: 'CAD',
+      notice: 'Shipping and discount codes are added at checkout.',
     },
   },
   toggle: {

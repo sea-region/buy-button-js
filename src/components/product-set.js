@@ -23,7 +23,7 @@ export default class ProductSet extends Component {
   render() {
     super.render();
     const productConfig = Object.assign({}, this.config, {
-      node: this.document.querySelector(`.${this.classes.productSet.products}`),
+      node: this.document.querySelector(`.${this.classes.wrapper}`),
     });
     productConfig.product.iframe = false;
 

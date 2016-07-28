@@ -7,7 +7,7 @@ export default class Product extends Component {
   constructor(config, props) {
     super(config, props);
     this.cachedImage = null;
-    this.childTemplate = new Template(this.config.option.templates, this.config.option.contents, 'options');
+    this.childTemplate = new Template(this.templates, this.options.optionContents, 'options');
     this.cart = null;
     this.selectedQuantity = 1;
   }
@@ -26,10 +26,6 @@ export default class Product extends Component {
     return 'product';
   }
 
-  get childTypeKey() {
-    return 'option';
-  }
-
   get currentImage() {
     if (!this.cachedImage) {
       this.cachedImage = this.model.selectedVariantImage;
@@ -41,7 +37,7 @@ export default class Product extends Component {
   get viewData() {
     return merge(this.model, {
       buttonText: this.variantAvailable ? this.text.button : 'Unavailable',
-      childrenHtml: this.childrenHtml,
+      optionsHtml: this.optionsHtml,
       currentImage: this.currentImage,
       buttonClass: this.buttonClass,
       hasVariants: this.hasVariants,
@@ -60,8 +56,8 @@ export default class Product extends Component {
   get DOMEvents() {
     return Object.assign({}, this.options.DOMEvents, {
       click: this.closeCartOnBgClick.bind(this),
-      [`change .${this.classes.option.select}`]: this.onOptionSelect.bind(this),
-      [`click .${this.classes.product.button}`]: this.onButtonClick.bind(this),
+      [`change .${this.classes.select}`]: this.onOptionSelect.bind(this),
+      [`click .${this.classes.button}`]: this.onButtonClick.bind(this),
       [`click .${this.classes.quantityButton}.quantity-increment`]: this.onQuantityIncrement.bind(this, 1),
       [`click .${this.classes.quantityButton}.quantity-decrement`]: this.onQuantityIncrement.bind(this, -1),
       [`focusout .${this.classes.quantityInput}`]: this.onQuantityBlur.bind(this),
@@ -72,7 +68,7 @@ export default class Product extends Component {
     return this.model.selectedVariant;
   }
 
-  get childrenHtml() {
+  get optionsHtml() {
     return this.decoratedOptions.reduce((acc, option) => {
       const data = option;
       data.classes = this.classes;
@@ -186,7 +182,7 @@ export default class Product extends Component {
   }
 
   closeCartOnBgClick(evt) {
-    if (!this.wrapper.querySelector(`.${this.classes.product.button}`).contains(evt.target)) {
+    if (!this.wrapper.querySelector(`.${this.classes.button}`).contains(evt.target)) {
       this.cart.close();
     }
   }

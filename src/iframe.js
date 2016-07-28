@@ -74,36 +74,34 @@ export default class iframe {
   get customStyles() {
     let customStyles = [];
 
-    Object.keys(this.customStylesHash).forEach((typeKey) => {
+    if (this.customStylesHash) {
+      Object.keys(this.customStylesHash).forEach((key) => {
+        const styleGroup = [];
 
-      if (this.customStylesHash[typeKey]) {
-        Object.keys(this.customStylesHash[typeKey]).forEach((key) => {
-          const styleGroup = [];
-
-          Object.keys(this.customStylesHash[typeKey][key]).forEach((decKey) => {
-            if (isPseudoSelector(decKey)) {
-              styleGroup.push({
-                selector: `.${this.classes[typeKey][key]}${decKey}`,
-                declarations: ruleDeclarations(this.customStylesHash[typeKey][key][decKey]),
-              });
-            } else if (isMedia(decKey)) {
-              styleGroup.push({
-                media: decKey,
-                selector: `.${this.classes[typeKey][key]}`,
-                declarations: ruleDeclarations(this.customStylesHash[typeKey][key][decKey]),
-              });
-            } else {
-              const selector = this.classes[typeKey][key].split(' ').join('.');
-              styleGroup.push({
-                selector: `.${selector}`,
-                declarations: ruleDeclarations(this.customStylesHash[typeKey][key]),
-              });
-            }
-          });
-          customStyles = customStyles.concat(styleGroup);
+        Object.keys(this.customStylesHash[key]).forEach((decKey) => {
+          if (isPseudoSelector(decKey)) {
+            styleGroup.push({
+              selector: `.${this.classes[key]}${decKey}`,
+              declarations: ruleDeclarations(this.customStylesHash[key][decKey]),
+            });
+          } else if (isMedia(decKey)) {
+            styleGroup.push({
+              media: decKey,
+              selector: `.${this.classes[key]}`,
+              declarations: ruleDeclarations(this.customStylesHash[key][decKey]),
+            });
+          } else {
+            const selector = this.classes[key].split(' ').join('.');
+            styleGroup.push({
+              selector: `.${selector}`,
+              declarations: ruleDeclarations(this.customStylesHash[key]),
+            });
+          }
         });
-      }
-    });
+        customStyles = customStyles.concat(styleGroup);
+      });
+    }
+    console.log(customStyles);
 
     return customStyles;
   }

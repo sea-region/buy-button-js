@@ -32,8 +32,7 @@ export default class Component {
     this.config = merge(componentDefaults, config.options || {});
     this.props = props;
     this.model = {};
-    this.template = new Template(this.templates, this.contents, this.classes[this.typeKey][this.typeKey]);
-    this.children = null;
+    this.template = new Template(this.templates, this.contents, this.classes[this.typeKey]);
   }
 
   get client() {
@@ -65,23 +64,11 @@ export default class Component {
   }
 
   get styles() {
-    const stylesHash = {
-      [this.typeKey]: this.options.styles,
-    };
-    if (this.childTypeKey) {
-      stylesHash[this.childTypeKey] = this.config[this.childTypeKey].styles;
-    }
-    return stylesHash;
+    return Object.assign({}, this.options.styles);
   }
 
   get classes() {
-    const classNames = {
-      [this.typeKey]: this.options.classes,
-    };
-    if (this.childTypeKey) {
-      classNames[this.childTypeKey] = this.config[this.childTypeKey].classes;
-    }
-    return classNames;
+    return Object.assign({}, this.options.classes);
   }
 
   get document() {
@@ -187,7 +174,7 @@ export default class Component {
       const div = this.document.createElement('div');
       div.innerHTML = html;
       morphdom(this.wrapper, div);
-      this.wrapper.className = this.classes[this.typeKey].wrapper;
+      this.wrapper.className = this.classes.wrapper;
     } else {
       this.wrapper = this.createWrapper();
       this.wrapper.innerHTML = html;
@@ -198,7 +185,7 @@ export default class Component {
 
   createWrapper() {
     const wrapper = this.document.createElement('div');
-    wrapper.className = this.classes[this.typeKey].wrapper;
+    wrapper.className = this.classes.wrapper;
     if (this.iframe) {
       this.document.body.appendChild(wrapper);
     } else {
