@@ -101,7 +101,6 @@ export default class iframe {
         customStyles = customStyles.concat(styleGroup);
       });
     }
-    console.log(customStyles);
 
     return customStyles;
   }

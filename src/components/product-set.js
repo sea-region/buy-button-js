@@ -6,8 +6,12 @@ export default class ProductSet extends Component {
     return 'productSet';
   }
 
-  get childTypeKey() {
-    return 'product';
+  get styles() {
+    return Object.assign({}, this.options.styles, this.config.product.styles);
+  }
+
+  get classes() {
+    return Object.assign({}, this.options.classes, this.config.product.classes);
   }
 
   fetchData() {
