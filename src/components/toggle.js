@@ -1,3 +1,4 @@
+import CoreObject from 'core-js/library/fn/object';
 import Component from '../component';
 
 export default class CartToggle extends Component {
@@ -21,7 +22,7 @@ export default class CartToggle extends Component {
   }
 
   get DOMEvents() {
-    return Object.assign({}, this.options.DOMEvents, {
+    return CoreObject.assign({}, this.options.DOMEvents, {
       [`click .${this.classes.toggle.toggle}`]: this.props.cart.toggleVisibility.bind(this.props.cart),
     });
   }

@@ -1,3 +1,6 @@
+import CoreObject from 'core-js/library/fn/object';
+import CoreFrom from 'core-js/library/fn/array/from';
+
 import merge from 'lodash.merge';
 import Component from '../component';
 import CartToggle from './toggle';
@@ -26,7 +29,7 @@ export default class Cart extends Component {
   }
 
   get DOMEvents() {
-    return Object.assign({}, this.options.DOMEvents, {
+    return CoreObject.assign({}, this.options.DOMEvents, {
       [`click .${this.classes.cart.close}`]: this.close.bind(this),
       [`click .${this.classes.lineItem.quantityButton}.quantity-increment`]: this.onQuantityIncrement.bind(this, 1),
       [`click .${this.classes.lineItem.quantityButton}.quantity-decrement`]: this.onQuantityIncrement.bind(this, -1),

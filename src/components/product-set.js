@@ -1,3 +1,4 @@
+import CoreObject from 'core-js/library/fn/object';
 import Component from '../component';
 import Product from './product';
 
@@ -22,7 +23,7 @@ export default class ProductSet extends Component {
 
   render() {
     super.render();
-    const productConfig = Object.assign({}, this.config, {
+    const productConfig = CoreObject.assign({}, this.config, {
       node: this.document.querySelector(`.${this.classes.productSet.products}`),
     });
     productConfig.product.iframe = false;

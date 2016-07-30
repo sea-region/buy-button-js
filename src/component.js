@@ -1,3 +1,8 @@
+import CoreObject from 'core-js/library/fn/object';
+import CoreFrom from 'core-js/library/fn/array/from';
+
+Array.prototype.from = CoreFrom;
+
 import morphdom from 'morphdom';
 import merge from 'lodash.merge';
 import isFunction from './utils/is-function';
@@ -20,7 +25,8 @@ export default class Component {
   constructor(config, props) {
     this.id = config.id;
     this.node = config.node;
-    this.debug = config.debug;
+    // this.debug = config.debug;
+    this.debug = true;
     this.config = merge(componentDefaults, config.options || {});
     this.props = props;
     this.model = {};
@@ -33,27 +39,27 @@ export default class Component {
   }
 
   get options() {
-    return Object.assign({}, this.config[this.typeKey]);
+    return CoreObject.assign({}, this.config[this.typeKey]);
   }
 
   get templates() {
-    return Object.assign({}, this.options.templates);
+    return CoreObject.assign({}, this.options.templates);
   }
 
   get contents() {
-    return Object.assign({}, this.options.contents);
+    return CoreObject.assign({}, this.options.contents);
   }
 
   get text() {
-    return Object.assign({}, this.options.text);
+    return CoreObject.assign({}, this.options.text);
   }
 
   get events() {
-    return Object.assign({}, this.options.events);
+    return CoreObject.assign({}, this.options.events);
   }
 
   get DOMEvents() {
-    return Object.assign({}, this.options.DOMEvents);
+    return CoreObject.assign({}, this.options.DOMEvents);
   }
 
   get styles() {
@@ -106,6 +112,7 @@ export default class Component {
   }
 
   resize() {
+    this._userEvent('beforeResize');
     if (!this.iframe) {
       return;
     }
@@ -115,6 +122,7 @@ export default class Component {
     if (this.typeKey === 'product' || this.typeKey === 'productSet') {
       this.resizeY();
     }
+    this._userEvent('afterResize');
   }
 
   resizeY() {
@@ -198,6 +206,8 @@ export default class Component {
   }
 
   loadImgs() {
+    console.log('loadimgs');
+    console.log(this.wrapper.querySelectorAll('img'));
     const imgs = [...this.wrapper.querySelectorAll('img')];
     const promises = imgs.map((img) => {
       const src = img.getAttribute('data-src');

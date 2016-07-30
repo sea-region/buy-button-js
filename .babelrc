@@ -1,9 +1,6 @@
 {
   "presets": ["shopify"],
   "plugins": [
-    ["transform-runtime", {
-      "regenerator": false
-    }],
     ['transform-es2015-classes', {loose: true}]
   ]
 }

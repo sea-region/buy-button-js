@@ -1,3 +1,4 @@
+import CoreObject from 'core-js/library/fn/object';
 import merge from 'lodash.merge';
 import Component from '../component';
 import Template from '../template';

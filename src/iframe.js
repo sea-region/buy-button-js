@@ -1,3 +1,6 @@
+import CoreObject from 'core-js/library/fn/object';
+import CoreFrom from 'core-js/library/fn/array/from';
+
 import hogan from 'hogan.js';
 import stylesTemplate from './templates/styles';
 
