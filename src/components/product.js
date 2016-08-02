@@ -7,6 +7,7 @@ export default class Product extends Component {
   constructor(config, props) {
     super(config, props);
     this.cachedImage = null;
+    this.fixedVariantId = config.variantId;
     this.childTemplate = new Template(this.config.option.templates, this.config.option.contents, 'options');
     this.cart = null;
     this.selectedQuantity = 1;
@@ -119,9 +120,30 @@ export default class Product extends Component {
     }));
   }
 
+  setupModel(data) {
+    if (data) {
+      return Promise.resolve(this.setVariantById(this.fixedVariantId, data));
+    } else {
+      return this.fetchData().then((model) => this.setVariantById(this.fixedVariantId, model));
+    }
+  }
+
+  setVariantById(id, model) {
+    if (id) {
+      const selectedVariant = model.variants.filter((variant) => variant.id === id)[0];
+      if (selectedVariant) {
+        model.options.forEach((option) => {
+          option.selected = selectedVariant.optionValues.filter((optionValue) => optionValue.name === option.name)[0].value;
+        });
+      } else {
+        console.error('Invalid variant ID');
+      }
+    }
+    return model;
+  }
+
   fetchData() {
     return this.props.client.fetchProduct(this.id).then((model) => {
-      model.selectedQuantity = 0;
       return model;
     });
   }
