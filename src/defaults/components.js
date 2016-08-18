@@ -10,7 +10,7 @@ const defaults = {
     iframe: true,
     buttonDestination: 'cart',
     manifest: ['product', 'option'],
-    contents: [
+    order: [
       'img',
       'title',
       'variantTitle',
@@ -18,7 +18,7 @@ const defaults = {
       'button',
       'price',
     ],
-    oldcontents: {
+    contents: {
       img: true,
       title: true,
       variantTitle: false,
@@ -55,7 +55,7 @@ const defaults = {
   },
   modalProduct: {
     iframe: false,
-    oldcontents: {
+    contents: {
       img: true,
       title: true,
       variantTitle: true,
@@ -65,7 +65,7 @@ const defaults = {
       button: true,
       description: true,
     },
-    contents: [
+    order: [
       'img',
       'title',
       'variantTitle',
@@ -85,28 +85,28 @@ const defaults = {
     manifest: ['modal', 'product', 'option'],
     classes: {
       modal: 'modal',
-      oldcontents: 'modal-oldcontents',
+      contents: 'modal-contents',
       close: 'btn--close',
       wrapper: 'modal-wrapper',
       product: 'product-modal',
       img: 'modal-img',
       footer: 'modal-footer',
-      scrolloldcontents: 'modal-scroll-oldcontents',
+      scrollcontents: 'modal-scroll-contents',
     },
-    oldcontents: {
-      oldcontents: true,
+    contents: {
+      contents: true,
     },
-    contents: ['oldcontents'],
+    order: ['contents'],
     templates: modalTemplates,
   },
   productSet: {
     iframe: true,
     manifest: ['product', 'option', 'productSet'],
-    oldcontents: {
+    contents: {
       title: false,
       products: true,
     },
-    contents: ['title', 'products'],
+    order: ['title', 'products'],
     templates: {
       title: '<h2 class="{{data.classes.productSet.title}}">{{data.collection.attrs.title}}</h2>',
       products: '<div class="{{data.classes.productSet.products}}"></div>',
@@ -122,10 +122,10 @@ const defaults = {
   },
   option: {
     templates: optionTemplates,
-    oldcontents: {
+    contents: {
       option: true,
     },
-    contents: ['option'],
+    order: ['option'],
     classes: {
       option: 'option-select',
       wrapper: 'option-select-wrapper',
@@ -137,12 +137,12 @@ const defaults = {
     iframe: true,
     templates: cartTemplates,
     manifest: ['cart', 'lineItem'],
-    oldcontents: {
+    contents: {
       title: true,
       lineItems: true,
       footer: true,
     },
-    contents: ['title', 'lineItems', 'footer'],
+    order: ['title', 'lineItems', 'footer'],
     classes: {
       wrapper: 'cart-wrapper',
       cart: 'cart',
@@ -170,14 +170,14 @@ const defaults = {
   },
   lineItem: {
     templates: lineItemTemplates,
-    oldcontents: {
+    contents: {
       image: true,
       variantTitle: true,
       title: true,
       price: true,
       quantity: true,
     },
-    contents: [
+    order: [
       'image',
       'variantTitle',
       'title',
@@ -199,12 +199,12 @@ const defaults = {
     templates: toggleTemplates,
     manifest: ['toggle'],
     iframe: true,
-    oldcontents: {
+    contents: {
       count: true,
       icon: true,
       title: false,
     },
-    contents: [
+    order: [
       'count',
       'icon',
       'title',
