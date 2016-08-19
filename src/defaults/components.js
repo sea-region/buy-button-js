@@ -91,7 +91,7 @@ const defaults = {
       product: 'product-modal',
       img: 'modal-img',
       footer: 'modal-footer',
-      scrollcontents: 'modal-scroll-contents',
+      scrollContents: 'modal-scroll-contents',
     },
     contents: {
       contents: true,
