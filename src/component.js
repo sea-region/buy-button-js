@@ -26,7 +26,7 @@ export default class Component {
     this.config = merge({}, componentDefaults, config.options || {});
     this.props = props;
     this.model = {};
-    this.template = new Template(this.templates, this.contents);
+    this.template = new Template(this.templates, this.contents, this.order);
     this.children = null;
   }
 
@@ -42,17 +42,16 @@ export default class Component {
     return this.options.manifest.slice(0);
   }
 
+  get order() {
+    return this.options.order.slice(0);
+  }
+
   get templates() {
     return merge({}, this.options.templates);
   }
 
   get contents() {
-    return this.options.order.reduce((items, key) => {
-      if (this.options.contents[key]) {
-        items[key] = true;
-      }
-      return items;
-    }, {});
+    return merge({}, this.options.contents);
   }
 
   get text() {
@@ -180,7 +179,7 @@ export default class Component {
   updateConfig(config) {
     this._userEvent('beforeUpdateConfig');
     this.config = merge(this.config, config.options);
-    this.template = new Template(this.templates, this.contents, this.classes[this.typeKey][this.typeKey]);
+    this.template = new Template(this.templates, this.contents, this.order);
     if (this.iframe) {
       this.iframe.updateStyles(this.styles);
     }
